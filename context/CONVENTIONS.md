@@ -1,0 +1,112 @@
+# Convenções
+
+## Idioma
+
+- Interface, mensagens de erro, documentação e comentários de produto em português do Brasil.
+- Código (variáveis, funções, tipos) em inglês.
+- Datas exibidas em `dd/MM/aaaa`; datas por extenso com locale `ptBR`.
+
+## Frontend
+
+### Arquivos e nomes
+
+- Componentes React em `PascalCase.tsx`; hooks em `camelCase.ts` com prefixo `use`.
+- Módulos em `src/features/<nome>/` com `components/`, `pages/` e `types.ts`.
+- Componentes base em `src/components/ui/`; compartilhados em `src/components/shared/`.
+- Importações usam o alias `@/`.
+- Tipos importados com `import type`.
+
+### TypeScript
+
+- Modo estrito, `noUncheckedIndexedAccess`, `verbatimModuleSyntax`.
+- Sem `any` implícito. Prefira tipos explícitos nos contratos de API.
+- Sem `enum`; use uniões literais e constantes (`as const`).
+- Componentes funcionais e hooks; sem classes.
+
+### Dados e API
+
+- Nenhum `fetch` fora de `src/lib/api.ts`; páginas usam `src/services/`.
+- Erros da API chegam como `ApiError` com `status`, `code`, `message` e `details`.
+- Estados de tela: carregando, erro, vazio, sucesso — sempre tratados.
+- Toda mutação fornece feedback (toast) e recarrega o recurso afetado.
+
+### UI
+
+- Tokens em `globals.css`; não introduza hexadecimais em componentes, exceto a paleta centralizada em `lib/colors.ts`.
+- Use componentes de `components/ui` antes de criar equivalentes.
+- Ícones apenas via `Icon` (Feather). Não importe outra biblioteca de ícones.
+- Texto sobre cor vibrante usa `text-primary-foreground` (escuro) para contraste.
+
+## Backend
+
+### Camadas e nomes
+
+- Python 3.12, type hints e `from __future__ import annotations`.
+- `snake_case` para funções, variáveis e colunas; `PascalCase` para classes.
+- Rotas não contêm SQL nem cálculos de domínio.
+- Repositories concentram consultas; services concentram regras e transações.
+- Modelos usam SQLAlchemy 2 (`Mapped`, `mapped_column`) e `db.Model`.
+
+### Validação
+
+- Toda entrada é validada no backend, mesmo que o frontend já valide.
+- Erros de campo: `ValidationError` com `details = {"fields": {...}}`.
+- Mensagens objetivas, em português, sem expor detalhes internos.
+- Limites atuais: atividade com nome 2–80, descrição até 500, categoria até 40 e cor na paleta; Diário com título até 160, conteúdo até 100.000, 10 etiquetas de até 30 caracteres e busca até 200.
+
+### Transações e erros
+
+- Serviços chamam `repository.commit()`, que faz rollback em falha.
+- Not found → 404; conflito de unicidade → 409; validação → 422.
+- Exceções inesperadas são registradas e retornam 500 genérico.
+- Nunca retorne stack trace, caminho de arquivo ou SQL ao cliente.
+
+## Datas e fuso
+
+- Registros diários: data local sem hora, `YYYY-MM-DD`.
+- `created_at` / `updated_at`: UTC, serializados em ISO 8601 com `Z`.
+- No frontmatter do Diário, timestamps preservam o fuso local; a API converte para UTC e a UI exibe em horário local.
+- Datas futuras não podem ser registradas em atividades.
+- Não use `toISOString()` para obter a data local no frontend; use `toDateKey()` (`lib/dates.ts`).
+
+## Arquivos Markdown do Diário
+
+- Markdown é a fonte canônica; o SQLite guarda apenas metadados do índice.
+- Caminho: `data/diary/AAAA/MM/<uuid32>-<slug>.md`. O slug não muda após edição de título.
+- Frontmatter YAML com `id`, `title`, `created_at`, `updated_at`, `tags`; o corpo é o texto integral.
+- Nunca aceite caminhos do cliente; valide IDs com `^[0-9a-f]{32}$` e confirme que o caminho resolvido permanece em `DIARY_DIR`.
+- Escritas usam temporário no mesmo diretório, `flush`, `fsync` e `os.replace`.
+- Arquivos malformados são ignorados/reportados, nunca apagados automaticamente.
+- O índice deve poder ser reconstruído a partir dos arquivos sem perda de conteúdo.
+- O corpo nunca deve ser copiado para o banco; listagem e busca leem o arquivo.
+- `data/diary/` é ignorado pelo Git e precisa entrar em backups separadamente.
+
+## Banco de dados
+
+- SQLite local em `data/elisa.db`.
+- Alterações de esquema sempre via migração Alembic.
+- Não edite migrações já aplicadas; crie uma nova.
+- Nunca versione `.db`, `.db-wal`, `.db-shm` ou backups.
+- Faça backup antes de operações de dados relevantes: `scripts/backup_db.py`.
+
+## Testes
+
+- Backend: pytest, banco temporário isolado por teste, cobrindo CRUD, validação, 404, conflito, datas, sequências e persistência.
+- Frontend: Vitest + Testing Library, priorizando regra de comportamento (calendário, formulários, listas, proteção de alterações e estados) em vez de "renderiza sem erro".
+- Testes devem ser determinísticos: não dependam da data real quando possível; componentes aceitam `today` para injeção.
+- Mocks de serviço apenas nas fronteiras; não simule o banco nos testes de API.
+- Persistência em arquivo deve ser testada em diretório temporário, incluindo falha de escrita, caminhos inválidos e reindexação.
+
+## Git
+
+- Commits somente com autorização explícita.
+- Inspecione `git status` e `git diff` antes de alterar arquivos existentes.
+- Não versione `.env`, bancos, backups, `node_modules`, `.venv`, caches ou builds.
+- Mensagens de commit curtas, no imperativo, descrevendo o efeito.
+
+## Documentação
+
+- Atualize `context/` na mesma tarefa em que o comportamento muda.
+- Links relativos entre arquivos Markdown.
+- Decisão durável → ADR; detalhe operacional → skill; estado → ROADMAP.
+- Não duplique o mesmo conteúdo em vários documentos; referencie.
