@@ -2,7 +2,7 @@
 
 ## Visão geral
 
-Elisa é um monólito modular local-first com dois processos em desenvolvimento:
+Elisa é um monólito modular local-first. Em desenvolvimento há dois processos; no uso local consolidado, o Flask serve o build e pode ser iniciado por uma janela de controle desktop opcional via pywebview, enquanto a interface continua no navegador.
 
 ```text
 Navegador
@@ -70,7 +70,7 @@ Não há microserviços, filas, cache externo ou banco remoto. O Diário usa Mar
 
 - `DATABASE_URL` — padrão `sqlite:///data/elisa.db` calculado a partir da raiz do projeto.
 - `DIARY_DIR` — padrão `data/diary`, criado automaticamente; contém os Markdown canônicos.
-- `FLASK_HOST` / `FLASK_PORT` — padrão `127.0.0.1:5000`.
+- `FLASK_HOST` / `FLASK_PORT` — padrão `127.0.0.1:5000`. O launcher desktop ignora `FLASK_HOST` e usa a porta de `FLASK_PORT` ou `--port`.
 - `SERVE_FRONTEND` — serve `frontend/dist` quando existir.
 - `MAX_HISTORY_DAYS` — limite de intervalo de histórico (800 dias).
 
@@ -155,9 +155,21 @@ Detalhes do formato Markdown e das regras em [modules/diary.md](modules/diary.md
 - Build local: `frontend/dist` servido pelo Flask com fallback para `index.html`; rotas `/api/*` nunca caem no SPA.
 - Configuração em `backend/app/core/frontend.py`.
 
+## Launcher desktop (opcional)
+
+- Ponto de entrada: `elisa_desktop.py`; atalho: `iniciar_elisa.cmd`.
+- Janela de controle: `desktop/launcher.html`. Ela mostra o estado do serviço, o endereço local, **Abrir Elisa** e **Encerrar Elisa**. A interface React não é carregada dentro dela.
+- A aplicação principal continua aberta no navegador padrão, em `http://127.0.0.1:<porta>`.
+- Dependências opcionais: `pywebview` e `waitress` em `backend/requirements-desktop.txt`; o backend e os testes não dependem delas.
+- O launcher valida `frontend/dist/index.html` e o esquema do banco antes de iniciar o servidor. Migrações continuam explícitas.
+- O servidor Waitress roda em uma thread em `127.0.0.1`; fechar a janela ou usar **Encerrar Elisa** para somente o servidor pertencente ao launcher.
+- Se já existir uma instância da Elisa no endereço, o launcher entra em estado de instância externa, permite abri-la e não encerra esse processo.
+- `FLASK_HOST` não é usado no desktop. O launcher não deve ser adaptado para exposição na rede sem autenticação e revisão de segurança.
+- Diagnóstico em `data/elisa-desktop.log` (ignorado pelo Git).
+
 ## Fronteiras de segurança
 
-- Servidor escuta apenas `127.0.0.1` por padrão.
+- Servidor escuta apenas `127.0.0.1` por padrão; o launcher desktop sempre usa loopback.
 - Sem autenticação; adequado somente a uso local e usuário único.
 - Validação de entrada no backend, além da validação de conveniência no frontend.
 - Caminhos do SPA são resolvidos e verificados dentro de `frontend/dist`.
@@ -175,3 +187,4 @@ Detalhes do formato Markdown e das regras em [modules/diary.md](modules/diary.md
 - Bundle inicial único; code splitting será considerado quando o número de módulos crescer.
 - Categoria é texto livre com sugestões; não existe entidade de categoria.
 - Sem testes end-to-end de navegador; testes cobrem API, persistência, calendário, formulários e componentes do Diário.
+- O launcher desktop não é empacotado como executável independente e exige o ambiente virtual, o build do frontend e o runtime WebView2.

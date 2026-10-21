@@ -50,6 +50,7 @@ Legenda: **Concluído** = implementado, testado e documentado. **Em andamento** 
 - [x] Script de backup consistente do SQLite.
 - [x] Testes e build executados com sucesso.
 - [x] Documentação de que o backup do Diário exige cópia de `data/diary/`.
+- [x] Launcher desktop com pywebview, janela de controle, abertura no navegador e encerramento do servidor ao fechar.
 
 ## Em andamento
 
@@ -99,7 +100,7 @@ Nenhuma frente ativa no momento.
 - [ ] Backup automático com retenção, incluindo arquivos do Diário.
 - [ ] Restauração pela interface.
 - [ ] Diagnóstico de banco e migrações na UI.
-- [ ] Empacotamento de execução local (script único).
+- [ ] Empacotamento em executável independente, sem exigir ambiente virtual.
 
 ## Bloqueado
 

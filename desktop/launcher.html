@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Elisa — Launcher</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --background: #0b0b0d;
+        --surface: #141417;
+        --surface-raised: #1c1c21;
+        --border: #303036;
+        --text-primary: #f2f2f4;
+        --text-secondary: #a0a0aa;
+        --text-disabled: #666670;
+        --primary: #8b5cf6;
+        --primary-foreground: #0b0b0d;
+        --destructive: #f43f5e;
+        --destructive-surface: rgba(244, 63, 94, 0.12);
+        --success: #4ade80;
+        --warning: #facc15;
+        --info: #60a5fa;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        background: var(--background);
+        color: var(--text-primary);
+        font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        padding: 24px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .mark {
+        display: grid;
+        width: 38px;
+        height: 38px;
+        place-items: center;
+        border-radius: 11px;
+        background: var(--primary);
+        color: var(--primary-foreground);
+        font-size: 17px;
+        font-weight: 700;
+      }
+
+      .brand-copy {
+        display: grid;
+        gap: 2px;
+      }
+
+      .brand-name {
+        font-size: 17px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+
+      .brand-subtitle {
+        color: var(--text-secondary);
+        font-size: 11px;
+      }
+
+      .panel {
+        display: flex;
+        flex: 1 1 auto;
+        flex-direction: column;
+        gap: 18px;
+        margin-top: 24px;
+        padding: 20px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--surface);
+      }
+
+      .status-line {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--text-secondary);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 999px;
+        background: var(--info);
+      }
+
+      body[data-state='running'] .status-dot {
+        background: var(--success);
+        box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
+      }
+
+      body[data-state='external'] .status-dot {
+        background: var(--info);
+        box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+      }
+
+      body[data-state='error'] .status-dot {
+        background: var(--destructive);
+      }
+
+      body[data-state='starting'] .status-dot,
+      body[data-state='stopping'] .status-dot {
+        background: var(--warning);
+        animation: pulse 1.2s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 0.45;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      .status-title {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+
+      .status-detail {
+        min-height: 52px;
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: 12px;
+        line-height: 1.6;
+        white-space: pre-line;
+      }
+
+      .address {
+        display: grid;
+        gap: 6px;
+      }
+
+      .address-label {
+        color: var(--text-disabled);
+        font-size: 9px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .address-value {
+        overflow: hidden;
+        padding: 10px 12px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--surface-raised);
+        color: var(--text-secondary);
+        font-family: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
+        font-size: 12px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        user-select: text;
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+        margin-top: auto;
+      }
+
+      .button {
+        flex: 1 1 0;
+        min-height: 38px;
+        padding: 8px 14px;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        font: inherit;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          background-color 120ms ease,
+          border-color 120ms ease,
+          color 120ms ease,
+          opacity 120ms ease;
+      }
+
+      .button:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+      }
+
+      .button:disabled {
+        cursor: not-allowed;
+        opacity: 0.45;
+      }
+
+      .button-primary {
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+
+      .button-primary:hover:not(:disabled) {
+        background: #9f75ff;
+      }
+
+      .button-danger {
+        border-color: var(--border);
+        background: transparent;
+        color: var(--text-secondary);
+      }
+
+      .button-danger:hover:not(:disabled) {
+        border-color: var(--destructive);
+        background: var(--destructive-surface);
+        color: var(--destructive);
+      }
+
+      .retry {
+        align-self: flex-start;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: var(--primary);
+        font: inherit;
+        font-size: 11px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .retry:hover {
+        text-decoration: underline;
+      }
+
+      .retry:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 3px;
+      }
+
+      .footer {
+        margin-top: 14px;
+        color: var(--text-disabled);
+        font-size: 10px;
+        line-height: 1.5;
+        text-align: center;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      @media (max-width: 520px) {
+        body {
+          padding: 18px;
+        }
+
+        .panel {
+          margin-top: 18px;
+          padding: 16px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .status-dot {
+          animation: none !important;
+        }
+
+        .button {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body data-state="starting">
+    <header class="brand">
+      <span class="mark" aria-hidden="true">E</span>
+      <span class="brand-copy">
+        <span class="brand-name">Elisa</span>
+        <span class="brand-subtitle">Launcher local</span>
+      </span>
+    </header>
+
+    <main class="panel" aria-live="polite">
+      <div class="status-line">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span id="status-label">Iniciando</span>
+      </div>
+
+      <h1 class="status-title" id="status-title">Preparando a Elisa</h1>
+      <p class="status-detail" id="status-detail">
+        Verificando o ambiente e os serviços locais...
+      </p>
+
+      <div class="address">
+        <span class="address-label">Endereço local</span>
+        <span class="address-value" id="address">__ELISA_URL__</span>
+      </div>
+
+      <button class="retry hidden" id="retry" type="button">Tentar novamente</button>
+
+      <div class="actions">
+        <button class="button button-primary" id="open" type="button" disabled>
+          Abrir Elisa
+        </button>
+        <button class="button button-danger" id="stop" type="button" disabled>
+          Encerrar Elisa
+        </button>
+      </div>
+    </main>
+
+    <p class="footer">
+      A interface da Elisa abre no navegador. Este launcher apenas gerencia o servidor local.
+    </p>
+
+    <script>
+      const body = document.body
+      const statusLabel = document.getElementById('status-label')
+      const statusTitle = document.getElementById('status-title')
+      const statusDetail = document.getElementById('status-detail')
+      const address = document.getElementById('address')
+      const openButton = document.getElementById('open')
+      const stopButton = document.getElementById('stop')
+      const retryButton = document.getElementById('retry')
+
+      const viewState = {
+        starting: {
+          label: 'Iniciando',
+          title: 'Preparando a Elisa',
+        },
+        running: {
+          label: 'Em execução',
+          title: 'Elisa em execução',
+        },
+        external: {
+          label: 'Instância externa',
+          title: 'Elisa já está rodando',
+        },
+        error: {
+          label: 'Erro',
+          title: 'Não foi possível iniciar',
+        },
+        stopping: {
+          label: 'Encerrando',
+          title: 'Encerrando a Elisa',
+        },
+        stopped: {
+          label: 'Encerrada',
+          title: 'Elisa encerrada',
+        },
+      }
+
+      let currentState = 'starting'
+      let shuttingDown = false
+
+      function render(status) {
+        currentState = status.state || 'starting'
+        const meta = viewState[currentState] ?? viewState.starting
+
+        body.dataset.state = currentState
+        statusLabel.textContent = meta.label
+        statusTitle.textContent = meta.title
+        statusDetail.textContent = status.detail || ''
+        address.textContent = status.url || '—'
+        address.title = status.url || ''
+
+        openButton.disabled = !status.canOpen || shuttingDown
+        stopButton.disabled = ['starting', 'stopping', 'stopped'].includes(currentState) || shuttingDown
+        stopButton.textContent = currentState === 'running' ? 'Encerrar Elisa' : 'Fechar launcher'
+        retryButton.classList.toggle('hidden', currentState !== 'error' || shuttingDown)
+      }
+
+      async function refresh() {
+        if (!window.pywebview?.api) {
+          window.setTimeout(refresh, 100)
+          return
+        }
+
+        try {
+          render(await window.pywebview.api.status())
+        } catch (error) {
+          render({
+            state: 'error',
+            title: 'Falha na ponte do launcher',
+            detail: 'Não foi possível consultar o estado do servidor. Feche e abra o launcher novamente.',
+            url: address.textContent,
+            canOpen: false,
+          })
+        }
+
+        window.setTimeout(refresh, 500)
+      }
+
+      openButton.addEventListener('click', async () => {
+        try {
+          const result = await window.pywebview.api.open_app()
+          if (!result.ok) {
+            statusDetail.textContent = result.error || 'Não foi possível abrir a Elisa.'
+          }
+        } catch (error) {
+          statusDetail.textContent = 'Não foi possível abrir o navegador padrão.'
+        }
+      })
+
+      stopButton.addEventListener('click', async () => {
+        if (shuttingDown) {
+          return
+        }
+
+        shuttingDown = true
+        openButton.disabled = true
+        stopButton.disabled = true
+        stopButton.textContent = currentState === 'running' ? 'Encerrando...' : 'Fechando...'
+
+        try {
+          await window.pywebview.api.shutdown()
+        } catch (error) {
+          // A janela pode ser destruída antes de a promessa ser resolvida.
+        }
+      })
+
+      retryButton.addEventListener('click', async () => {
+        if (!window.pywebview?.api) {
+          return
+        }
+
+        retryButton.classList.add('hidden')
+        await window.pywebview.api.retry()
+      })
+
+      refresh()
+    </script>
+  </body>
+</html>

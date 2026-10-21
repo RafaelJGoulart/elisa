@@ -7,6 +7,7 @@ Cada módulo tem limites explícitos, UI própria, serviço de frontend e, quand
 | Início | Concluído (v0.1.0) | `/` | Este documento / [activities.md](modules/activities.md) |
 | Atividades | Concluído (v0.1.0) | `/atividades` | [activities.md](modules/activities.md) |
 | Diário | Concluído (v0.1.0) | `/diario` | [diary.md](modules/diary.md) |
+| Operação desktop | Concluído (v0.1.0) | `elisa_desktop.py` | [ADR-010](decisions/ADR-010-launcher-desktop-pywebview.md) |
 | Conhecimento | Planejado | — | Roadmap |
 | Projetos | Planejado | — | Roadmap |
 | IA | Planejado | — | [AI_CONTEXT.md](AI_CONTEXT.md) |
@@ -59,6 +60,20 @@ Cada módulo tem limites explícitos, UI própria, serviço de frontend e, quand
 - modelo do índice em `backend/app/models/diary.py`
 
 **Contratos e limitações:** ver [diary.md](modules/diary.md).
+
+## Operação desktop
+
+**Responsabilidade:** iniciar, monitorar e encerrar o servidor local da Elisa em uma janela pequena de controle, sem hospedar a interface React.
+
+**Dependências:** build em `frontend/dist`, banco migrado, `pywebview` e `waitress` opcionais, e runtime WebView2 no Windows.
+
+**Arquivos:**
+- `elisa_desktop.py` — ciclo de vida do servidor e da janela de controle.
+- `desktop/launcher.html` — janela com estado, endereço, **Abrir Elisa**, **Encerrar Elisa** e mensagens de erro.
+- `iniciar_elisa.cmd` — atalho que gera o build ausente e abre o launcher.
+- `backend/requirements-desktop.txt` — dependências opcionais.
+
+**Limites:** não contém regra de negócio, não carrega o frontend, não inicia Vite, não expõe a rede e não aplica migrações automaticamente. A aplicação continua no navegador. Ver [ADR-010](decisions/ADR-010-launcher-desktop-pywebview.md).
 
 ## Módulos planejados
 

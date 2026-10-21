@@ -129,6 +129,16 @@ Compartilhados:
 - Falha de salvamento mantém o texto digitado e mostra alerta inline; não fecha o diálogo nem descarta conteúdo.
 - O aviso local-first é textual, discreto e não promete sincronização.
 
+## Janela de controle desktop
+
+- O launcher é uma janela pequena de operação, não a interface principal. A interface React continua no navegador e nunca é carregada dentro do pywebview.
+- A composição usa marca, estado do serviço, endereço local e as ações **Abrir Elisa** e **Encerrar Elisa**, em um painel escuro com `surface`, borda de 1 px e raio de 12 px.
+- O endereço aparece em fonte mono, em uma superfície elevada e selecionável.
+- Os estados são iniciando, em execução, instância externa, erro e encerrando. Cada um combina texto, título e ponto de estado; a cor nunca é o único indicador.
+- **Abrir Elisa** é a ação primária roxa; **Encerrar Elisa** é secundária com hover destrutivo. Durante a inicialização ou o encerramento, as ações ficam desabilitadas.
+- Em erro, a mensagem é exibida no painel e **Tentar novamente** fica disponível. O botão de encerramento vira **Fechar launcher** quando não há servidor próprio para parar.
+- O launcher respeita `prefers-reduced-motion` e não usa fontes ou ícones remotos.
+
 ## Estados e feedback
 
 - Carregamento: skeletons com `aria-busy`.

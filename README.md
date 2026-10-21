@@ -11,6 +11,7 @@ A primeira versão funcional inclui dois módulos:
 
 - **Frontend:** React 19, TypeScript estrito, Vite, Tailwind CSS 4, componentes no estilo shadcn/ui, Radix UI, React Router, Feather Icons, Zod, date-fns.
 - **Backend:** Python 3.12, Flask 3, SQLAlchemy 2, Flask-Migrate/Alembic, SQLite, PyYAML.
+- **Launcher desktop opcional:** pywebview e Waitress, usados apenas para a janela de controle e o servidor local; a interface continua no navegador.
 - **Testes:** pytest (API e persistência) e Vitest + Testing Library (frontend).
 - **Documentação de contexto:** Markdown interligado em [`context/`](context/INDEX.md).
 
@@ -21,6 +22,7 @@ Fontes (Inter e JetBrains Mono) e ícones Feather são servidos localmente pelo 
 - Python 3.12+
 - Node.js 24+ e npm
 - Git
+- Windows com WebView2 apenas para o launcher desktop opcional
 
 ## Instalação
 
@@ -33,6 +35,12 @@ python -m venv .venv
 cd frontend
 npm install
 cd ..
+```
+
+Para usar o launcher desktop, instale as dependências opcionais:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r backend\requirements-desktop.txt
 ```
 
 Aplique as migrações do banco (execute a partir de `backend/`):
@@ -77,6 +85,18 @@ cd ..
 
 Com `frontend/dist` presente e `SERVE_FRONTEND=true`, o Flask serve o frontend em `http://127.0.0.1:5000`.
 
+## Launcher desktop (opcional)
+
+Com o build e as migrações prontos, inicie:
+
+```powershell
+.\.venv\Scripts\python.exe elisa_desktop.py
+```
+
+Ou use `iniciar_elisa.cmd`. A janela mostra o estado do servidor, o endereço local e as ações **Abrir Elisa** e **Encerrar Elisa**. A aplicação abre no navegador padrão.
+
+O launcher é somente um controlador. Ele não carrega, reescreve ou migra a interface React para dentro do pywebview. Se já houver uma Elisa em execução, ele permite abri-la, mas não encerra uma instância que não iniciou. Após alterações no frontend, execute `npm run build` antes de usar o launcher.
+
 ## Testes e qualidade
 
 Backend (na raiz):
@@ -113,6 +133,8 @@ Os arquivos são salvos em `data/backups/elisa-AAAAMMDD-HHMMSS.db`. Use `--sourc
 ## Estrutura
 
 ```text
+elisa_desktop.py    launcher desktop opcional
+iniciar_elisa.cmd   atalho do launcher
 backend/
   app/
     api/            rotas Flask, serialização e tratamento de erros
@@ -122,6 +144,7 @@ backend/
     services/       regras de negócio e validação
   migrations/       migrações Alembic
   tests/            testes pytest
+desktop/            janela de controle do launcher (não contém a interface React)
 frontend/
   src/
     app/            composição do app e rotas

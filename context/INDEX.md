@@ -23,6 +23,10 @@ Ponto de entrada da memória documental do projeto. Leia apenas o que for releva
 - [Diário](modules/diary.md) — escrita livre em Markdown, índice SQLite reconstruível, busca e edição.
 - Conhecimento, Projetos e IA existem apenas como estado planejado na interface. Não há implementação.
 
+## Operação desktop
+
+- [Launcher desktop](decisions/ADR-010-launcher-desktop-pywebview.md) — janela de controle em `desktop/launcher.html`, iniciada por `elisa_desktop.py` ou `iniciar_elisa.cmd`; a interface React continua no navegador.
+
 ## Decisões registradas
 
 - [ADR-001 — Monólito modular local-first](decisions/ADR-001-monolito-modular-local-first.md)
@@ -34,6 +38,7 @@ Ponto de entrada da memória documental do projeto. Leia apenas o que for releva
 - [ADR-007 — Vite no desenvolvimento, Flask no build local](decisions/ADR-007-serving-frontend.md)
 - [ADR-008 — Sem autenticação na versão local](decisions/ADR-008-sem-autenticacao-local.md)
 - [ADR-009 — Markdown canônico e índice SQLite reconstruível](decisions/ADR-009-markdown-canonico-indice-sqlite.md)
+- [ADR-010 — Launcher desktop local com pywebview](decisions/ADR-010-launcher-desktop-pywebview.md)
 
 ## Skills operacionais
 
@@ -45,6 +50,7 @@ Ponto de entrada da memória documental do projeto. Leia apenas o que for releva
 - [Escrever e executar testes](skills/testing.md)
 - [Atualizar a documentação](skills/update-docs.md)
 - [Backup e restauração do banco](skills/backup-restore.md)
+- [Executar e diagnosticar o launcher desktop](skills/desktop-launcher.md)
 
 ## Leitura por tarefa
 

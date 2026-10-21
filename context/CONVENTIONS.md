@@ -97,6 +97,18 @@
 - Mocks de serviço apenas nas fronteiras; não simule o banco nos testes de API.
 - Persistência em arquivo deve ser testada em diretório temporário, incluindo falha de escrita, caminhos inválidos e reindexação.
 
+## Desktop
+
+- `elisa_desktop.py` é apenas composição operacional: inicia/para o servidor e controla a janela. Regra de negócio permanece no backend e no frontend.
+- **Nunca carregue, copie ou migre o frontend React para dentro do pywebview.** A janela de controle não é a interface da Elisa; a aplicação continua no navegador.
+- O launcher escuta sempre `127.0.0.1`; não use `FLASK_HOST` para expô-lo.
+- Use Waitress para o servidor local, não `app.run` com debug. O launcher não é uma configuração de produção para rede.
+- `pywebview` e `waitress` são dependências opcionais em `backend/requirements-desktop.txt`; não as importe no backend, nos testes de API ou no código de domínio.
+- `desktop/launcher.html` é apenas a janela de controle; não duplique componentes, telas ou regras da interface React nele.
+- O launcher só pode encerrar o servidor que ele próprio iniciou. Uma instância externa deve ser detectada e nunca finalizada pelo launcher.
+- O servidor deve ser encerrado ao fechar a janela ou acionar **Encerrar Elisa**. Erros fatais devem ir para `data/elisa-desktop.log` e para uma caixa de diálogo nativa.
+- O build do frontend é pré-requisito. O atalho `iniciar_elisa.cmd` só gera o build quando ele estiver ausente; Vite não é iniciado pelo launcher.
+
 ## Git
 
 - Commits somente com autorização explícita.

@@ -40,6 +40,7 @@ Uso pessoal, usuário único, na própria máquina. Não há multiusuário, cola
   - busca por título, conteúdo e etiquetas, filtro por mês e leitura em diálogo;
   - edição com proteção contra perda de alterações e exclusão confirmada.
 - Documentação de contexto, testes de API e de UI, build de produção local.
+- Launcher desktop opcional com pywebview: janela de controle, abertura da Elisa no navegador e encerramento do servidor ao fechar.
 
 ## Fora de escopo nesta versão
 

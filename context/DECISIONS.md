@@ -13,6 +13,7 @@
 | [ADR-007](decisions/ADR-007-serving-frontend.md) | Vite no desenvolvimento, Flask no build local | Aceita | 2026-10-21 |
 | [ADR-008](decisions/ADR-008-sem-autenticacao-local.md) | Sem autenticação na versão local | Aceita | 2026-10-21 |
 | [ADR-009](decisions/ADR-009-markdown-canonico-indice-sqlite.md) | Markdown canônico e índice SQLite reconstruível | Aceita | 2026-10-21 |
+| [ADR-010](decisions/ADR-010-launcher-desktop-pywebview.md) | Launcher desktop local com pywebview | Aceita | 2026-10-21 |
 
 ## Formato de um ADR
 
