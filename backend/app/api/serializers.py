@@ -13,9 +13,11 @@ from app.models import (
     MediaConsumptionEvent,
     MediaItem,
     MediaType,
+    XpEvent,
 )
 from app.repositories.diary_file_store import DiaryDocument
 from app.services.activity_service import ActivityStats, MeasurableStats
+from app.services.xp_service import CATEGORY_LABELS
 
 
 def _iso_datetime(value: datetime) -> str:
@@ -131,6 +133,21 @@ def serialize_progress_entry(entry: ActivityProgressEntry) -> dict[str, Any]:
         "note": entry.note,
         "createdAt": _iso_datetime(entry.created_at),
         "updatedAt": _iso_datetime(entry.updated_at),
+    }
+
+
+def serialize_xp_event(event: XpEvent) -> dict[str, Any]:
+    return {
+        "id": event.id,
+        "source": event.source,
+        "category": event.category,
+        "categoryLabel": CATEGORY_LABELS.get(event.category, event.category),
+        "kind": event.kind,
+        "reason": event.reason,
+        "description": event.description,
+        "amount": event.amount,
+        "activityDate": event.activity_date.isoformat(),
+        "recordedAt": _iso_datetime(event.recorded_at),
     }
 
 

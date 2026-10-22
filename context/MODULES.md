@@ -8,6 +8,7 @@ Cada módulo tem limites explícitos, UI própria, serviço de frontend e, quand
 | Atividades | Concluído (v0.2.0) | `/atividades` | [activities.md](modules/activities.md) |
 | Diário | Concluído (v0.1.0) | `/diario` | [diary.md](modules/diary.md) |
 | Mídia | Concluído (v0.2.0) | `/midia` | [media.md](modules/media.md) |
+| Perfil e EXP | Concluído (2026-10-22) | `/perfil` | [profile.md](modules/profile.md) |
 | Operação desktop | Concluído (v0.1.0) | `elisa_desktop.py` | [ADR-010](decisions/ADR-010-launcher-desktop-pywebview.md) |
 | Conhecimento | Planejado | — | Roadmap |
 | Projetos | Planejado | — | Roadmap |
@@ -17,7 +18,7 @@ Cada módulo tem limites explícitos, UI própria, serviço de frontend e, quand
 
 **Responsabilidade:** acompanhar hábitos binários e mensuráveis por data, com unidades, metas opcionais, frequência, histórico visual, sequências e persistência local.
 
-**Dependências:** banco SQLite, API Flask, componentes compartilhados de UI, paleta de cores e unidades de medida.
+**Dependências:** banco SQLite, API Flask, componentes compartilhados de UI, paleta de cores, unidades de medida e serviço central de EXP (hábitos são a única fonte atual).
 
 **Frontend:**
 - `frontend/src/features/activities/pages/ActivitiesPage.tsx`
@@ -84,6 +85,27 @@ Cada módulo tem limites explícitos, UI própria, serviço de frontend e, quand
 
 **Contratos e limitações:** ver [media.md](modules/media.md).
 
+## Perfil e EXP
+
+**Responsabilidade:** apresentar nível, EXP acumulado, progresso, estatísticas de hábitos, distribuição por categoria e extrato recente. O backend calcula EXP e níveis; o frontend apenas exibe o contrato de `/api/profile`.
+
+**Dependências:** banco SQLite, extrato `xp_events`, mutações de Atividades, API Flask e componentes compartilhados de UI.
+
+**Frontend:**
+- `frontend/src/features/profile/pages/ProfilePage.tsx`
+- componentes em `frontend/src/features/profile/components/`
+- utilitários em `frontend/src/features/profile/format.ts`
+- serviço em `frontend/src/services/profile.ts`
+
+**Backend:**
+- rota em `backend/app/api/profile.py`
+- regras em `backend/app/services/xp_service.py`
+- dados em `backend/app/repositories/xp_repository.py`
+- modelo em `backend/app/models/xp.py`
+- sincronização em `backend/app/services/activity_service.py`
+
+**Contratos e limitações:** ver [profile.md](modules/profile.md) e [ADR-013](decisions/ADR-013-exp-ledger.md). Apenas hábitos geram EXP nesta versão.
+
 ## Operação desktop
 
 **Responsabilidade:** iniciar, monitorar e encerrar o servidor local da Elisa em uma janela pequena de controle, sem hospedar a interface React.
@@ -93,7 +115,7 @@ Cada módulo tem limites explícitos, UI própria, serviço de frontend e, quand
 **Arquivos:**
 - `elisa_desktop.py` — ciclo de vida do servidor e da janela de controle.
 - `desktop/launcher.html` — janela com estado, endereço, **Abrir Elisa**, **Encerrar Elisa** e mensagens de erro; a marca é injetada pelo gerador entre `<!-- ELISA_MARK:START -->` e `<!-- ELISA_MARK:END -->`.
-- `assets/brand/elisa.ico` — ícone da janela do pywebview, aplicado por `webview.start(icon=...)`.
+- `assets/brand/elisa.ico` — ícone da janela do pywebview (triângulo com fundo transparente), aplicado por `webview.start(icon=...)`; o processo define `AppUserModelID` próprio para a barra de tarefas.
 - `scripts/generate_brand_assets.py` — gera os arquivos de marca (SVG, PNG e ICO) a partir de `frontend/src/brand/mark.json`; requer Pillow.
 - `iniciar_elisa.cmd` — atalho que gera o build ausente e abre o launcher.
 - `backend/requirements-desktop.txt` — dependências opcionais.

@@ -51,6 +51,11 @@ Uso pessoal, usuário único, na própria máquina. Não há multiusuário, cola
   - índice SQLite reconstruível apenas com metadados;
   - busca por título, conteúdo e etiquetas, filtro por mês e leitura em diálogo;
   - edição com proteção contra perda de alterações e exclusão confirmada.
+- Módulo de Perfil e EXP:
+  - nível e progresso calculados no backend a partir de um extrato append-only;
+  - EXP por ocorrências de hábitos, sem duplicar regras nos módulos;
+  - estatísticas de hábitos, distribuição por categoria e extrato recente;
+  - correções e estornos auditáveis ao editar ou excluir registros.
 - Documentação de contexto, testes de API e de UI, build de produção local.
 - Launcher desktop opcional com pywebview: janela de controle, abertura da Elisa no navegador e encerramento do servidor ao fechar.
 
@@ -61,7 +66,7 @@ Uso pessoal, usuário único, na própria máquina. Não há multiusuário, cola
 - Integração real com modelos de IA.
 - Conhecimento e Projetos; o módulo de Mídia já faz parte do escopo atual.
 - Análise emocional, sugestões automáticas e lembretes no Diário.
-- Gamificação, notificações e conquistas.
+- Gamificação além do EXP por hábitos, notificações e conquistas.
 - Aplicativo móvel nativo.
 
 ## Objetivos de longo prazo

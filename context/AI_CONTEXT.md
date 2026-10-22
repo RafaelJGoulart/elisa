@@ -23,7 +23,9 @@ Esta pasta é a memória documental durável da Elisa. Ela existe para que outro
 | Decisões duráveis | [DECISIONS.md](DECISIONS.md) e `decisions/` |
 | Módulos e pontos de entrada | [MODULES.md](MODULES.md) e `modules/` |
 | Diário em Markdown e índice | [modules/diary.md](modules/diary.md) e [ADR-009](decisions/ADR-009-markdown-canonico-indice-sqlite.md) |
+| EXP, níveis e extrato | [modules/profile.md](modules/profile.md) e [ADR-013](decisions/ADR-013-exp-ledger.md) |
 | Procedimentos repetíveis | `skills/` |
+| Delegação e subagentes | [ADR-014](decisions/ADR-014-agentes-especializados-e-delegacao.md) e `.opencode/skills/` |
 | Instalação e comandos | [README.md](../README.md) e [AGENTS.md](../AGENTS.md) |
 
 ## Como atualizar
@@ -33,6 +35,7 @@ Esta pasta é a memória documental durável da Elisa. Ela existe para que outro
 - Mudança em formato de arquivo canônico ou indexação → ADR, módulo e skill de persistência.
 - Novo token/componente visual → `DESIGN_SYSTEM.md`.
 - Nova decisão estrutural → ADR e linha em `DECISIONS.md`.
+- Nova fonte de EXP ou mudança na curva/bônus → ADR, `modules/profile.md`, skill `xp-system` e testes de idempotência/estorno.
 - Novo procedimento repetível → skill específica.
 - Novo documento relevante → link em `INDEX.md`.
 - Corrija contradições entre código e documentação assim que encontradas.

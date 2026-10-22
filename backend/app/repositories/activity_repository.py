@@ -147,3 +147,7 @@ def commit() -> None:
     except Exception:
         db.session.rollback()
         raise
+
+
+def flush() -> None:
+    db.session.flush()

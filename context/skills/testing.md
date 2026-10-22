@@ -20,12 +20,15 @@ Cubra:
 - progresso de mídia separado de revisitas e de unidades diferentes;
 - tempo real, estimado e desconhecido sem mistura;
 - migração preservando dados existentes e semeando catálogos;
+- EXP: concessão, bônus semanal, idempotência, registros parciais, edição, estorno e exclusão de atividade;
+- extrato sobrevivendo à exclusão da atividade e hábitos arquivados contando normalmente;
 - arquivos canônicos em diretório temporário, reindexação e falha de escrita (ver [markdown-persistence](markdown-persistence.md)).
 
 ```powershell
 .\.venv\Scripts\python.exe -m pytest
 .\.venv\Scripts\python.exe -m pytest backend\tests\test_logs.py -q
 .\.venv\Scripts\python.exe -m pytest backend\tests\test_habits.py backend\tests\test_media.py -q
+.\.venv\Scripts\python.exe -m pytest backend\tests\test_xp.py -q
 .\.venv\Scripts\python.exe -m pytest backend\tests\test_migrations.py -q
 ```
 
@@ -45,6 +48,7 @@ Priorize comportamento:
 - diálogo de progresso: quantidade, unidade compatível e edição;
 - diálogo de consumo de mídia: unidades derivadas do tipo e revisita;
 - utilitários puros de mídia (rótulos, ícones e opções de unidade);
+- perfil: nível, barra acessível, estatísticas, categorias, extrato, estado vazio e erro com nova tentativa;
 - navegação essencial.
 
 Evite testes que apenas verificam renderização sem regra.

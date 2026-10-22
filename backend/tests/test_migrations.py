@@ -72,6 +72,9 @@ def test_migration_preserves_existing_data_and_seeds_catalogs(tmp_path: Path):
             assert connection.execute(
                 "SELECT code FROM measurement_units WHERE code = 'l'"
             ).fetchone() == ("l",)
+            assert connection.execute(
+                "SELECT COUNT(*) FROM xp_events"
+            ).fetchone() == (0,)
 
         command.downgrade(config, "fe63aca33060")
 
@@ -85,6 +88,7 @@ def test_migration_preserves_existing_data_and_seeds_catalogs(tmp_path: Path):
             assert "measurement_units" not in tables
             assert "media_items" not in tables
             assert "activity_progress_entries" not in tables
+            assert "xp_events" not in tables
             assert connection.execute(
                 "SELECT COUNT(*) FROM activities"
             ).fetchone() == (1,)

@@ -15,6 +15,7 @@
 - Unidades de hábito vêm de `/api/units`; unidades aceitas por tipo de mídia vêm de `type.units`. Não replique conversões ou tabelas de compatibilidade no frontend.
 - Quantidades usam `lib/format.ts`; tempo real, estimado e desconhecido têm rótulos e estilos distintos.
 - Datas de registro vêm da API em `YYYY-MM-DD`; use `lib/dates.ts` em vez de `toISOString()`.
+- EXP e níveis vêm de `/api/profile`; nunca recalcule fórmula, bônus ou ocorrência no frontend. Valores assinados do extrato precisam de sinal e texto, não apenas cor.
 
 ## Checklist visual
 

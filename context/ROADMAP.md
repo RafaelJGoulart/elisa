@@ -29,12 +29,24 @@ Legenda: **Concluído** = implementado, testado e documentado. **Em andamento** 
 - [x] Páginas de acervo, detalhe e estatísticas integradas à navegação.
 - [x] Testes de progresso, tempo, filtros, cascata, validação e persistência.
 
+### Perfil e EXP (acréscimo em 2026-10-22)
+
+- [x] Extrato append-only de EXP com eventos assinados, chave idempotente e correções sem apagar histórico.
+- [x] EXP centralizado no backend e exclusivo de hábitos nesta versão.
+- [x] Ocorrência de hábito valendo 1 EXP e bônus semanal de 7 EXP para hábitos diários e semanais.
+- [x] Semana de domingo a sábado, alinhada ao período existente.
+- [x] Progressão de níveis em aritmética inteira, sem fórmula duplicada no frontend.
+- [x] Recalculo e estorno em edição, remoção e exclusão de hábitos.
+- [x] Migração `1cd28703a86b`, sincronização de dados históricos e preservação do extrato após excluir atividade.
+- [x] Endpoint `GET /api/profile` e tela `/perfil` com nível, barra de progresso, estatísticas, categorias e extrato.
+- [x] Testes de idempotência, bônus, registros parciais, edição, exclusão, migração e interface.
+
 ### Migração e qualidade
 
 - [x] Migração única para hábitos mensuráveis e mídia, com seed idempotente de unidades e tipos.
 - [x] Preservação de atividades e conclusões existentes durante a recriação em lote no SQLite.
-- [x] Backend com 72 testes aprovados e 1 ignorado.
-- [x] Frontend com 10 arquivos e 33 testes aprovados, lint, typecheck e build.
+- [x] Backend com 86 testes aprovados.
+- [x] Frontend com 11 arquivos e 37 testes aprovados, lint, typecheck e build.
 
 ## v0.1.0 — Concluído (2026-10-21)
 
@@ -110,7 +122,15 @@ Nenhuma frente ativa no momento.
 - [ ] Ação de arquivamento na interface (a API já aceita `archived`).
 - [ ] Revisão semanal/mensal com resumo de consistência.
 - [ ] Atalhos adicionais de teclado dentro da grade (além de setas, `Home` e `End`).
-- [ ] Conquistas e marcos — apenas com dado real, sem gamificação artificial.
+- [ ] Recorrência personalizada por dia da semana; hoje a frequência semanal é o caso suportado.
+- [ ] Conquistas e marcos sobre o extrato de EXP, apenas com dados reais.
+
+### Perfil e EXP — evoluções
+
+- [ ] EXP para Mídia, Diário, Projetos e Conhecimento, cada um com origem e regra próprias.
+- [ ] Histórico paginado e filtros por categoria no extrato.
+- [ ] Agregações persistidas por categoria se o volume de eventos crescer.
+- [ ] Revisão da curva de níveis com dados reais de uso.
 
 ### Mídia — evoluções
 

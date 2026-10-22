@@ -16,6 +16,8 @@
 | [ADR-010](decisions/ADR-010-launcher-desktop-pywebview.md) | Launcher desktop local com pywebview | Aceita | 2026-10-21 |
 | [ADR-011](decisions/ADR-011-habitos-mensuraveis.md) | Hábitos mensuráveis sobre a entidade de atividades | Aceita | 2026-10-22 |
 | [ADR-012](decisions/ADR-012-media-tracker.md) | Catálogo local de mídia com eventos de consumo | Aceita | 2026-10-22 |
+| [ADR-013](decisions/ADR-013-exp-ledger.md) | EXP centralizado em extrato de eventos | Aceita | 2026-10-22 |
+| [ADR-014](decisions/ADR-014-agentes-especializados-e-delegacao.md) | Agentes especializados e delegação | Aceita | 2026-10-22 |
 
 ## Formato de um ADR
 

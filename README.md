@@ -2,11 +2,12 @@
 
 Ambiente pessoal digital modular, local-first e expansível. A Elisa combina acompanhamento de atividades, organização pessoal e, no futuro, uma companheira de IA com acesso controlado ao contexto local.
 
-A versão atual inclui três módulos:
+A versão atual inclui quatro módulos:
 
 - **Atividades:** criação, edição e exclusão de hábitos binários e mensuráveis. Hábitos mensuráveis aceitam unidade, meta opcional e frequência diária, semanal ou mensal; registros quantitativos podem ocorrer várias vezes no mesmo dia. O histórico usa grade de contribuições, sequências e estatísticas por período.
 - **Mídia:** catálogo local de animes, séries, filmes, livros, mangás, jogos, cursos, podcasts e tipos personalizados, com gêneros, busca, filtros, progresso, eventos de consumo e estatísticas de quantidade e tempo. Tempo real, estimado e desconhecido são exibidos separadamente.
 - **Diário:** escrita livre em registros Markdown, com título opcional, etiquetas, busca, filtro por mês, edição e exclusão. O SQLite guarda apenas um índice reconstruível; o texto permanece em `data/diary/`.
+- **Perfil e EXP:** nível, progresso, estatísticas, distribuição por categoria e extrato recente. Nesta versão, apenas hábitos geram EXP; o cálculo e a progressão ficam no backend.
 
 ## Stack
 
@@ -150,11 +151,12 @@ frontend/
   src/
     app/            composição do app e rotas
     components/     ui/ (shadcn/ui) e shared/ (Icon, shell, estados)
-    features/       módulos por funcionalidade (activities, media, diary, home)
+    features/       módulos por funcionalidade (activities, media, diary, profile, home)
     hooks/          hooks reutilizáveis
     lib/            API, datas, cores, validação do Diário e utilitários
     services/       contratos com o backend
     styles/         tokens e CSS global
+.opencode/          agentes especializados e skills nativas do OpenCode
 context/            memória documental do projeto
 data/               banco, Diário em Markdown e backups (não versionados)
 scripts/            utilitários operacionais
@@ -162,7 +164,7 @@ scripts/            utilitários operacionais
 
 ## Documentação de continuidade
 
-Comece por [`context/INDEX.md`](context/INDEX.md). Decisões arquiteturais, design system, convenções, roadmap e instruções para agentes estão em [`context/`](context/INDEX.md) e [`AGENTS.md`](AGENTS.md).
+Comece por [`context/INDEX.md`](context/INDEX.md). Decisões arquiteturais, design system, convenções, roadmap e instruções para agentes estão em [`context/`](context/INDEX.md), [`AGENTS.md`](AGENTS.md) e [`.opencode/`](.opencode/).
 
 ## Segurança e escopo
 

@@ -86,13 +86,13 @@ Escala usada:
 ## Marca
 
 - A marca da Elisa é o triângulo do Feather Icons (`triangle`), desenhado **apenas com o traço**: sem preenchimento e sem núcleo central.
-- Geometria e cores ficam em `frontend/src/brand/mark.json`, fonte única de verdade: `viewBox` 24×24, `strokeWidth` 2, o traço `M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z` e as cores `#8B5CF6` (traço) e `#0B0B0D` (fundo do ícone).
+- Geometria e cores ficam em `frontend/src/brand/mark.json`, fonte única de verdade: `viewBox` 24×24, `strokeWidth` 2, o traço `M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z` e a cor `#8B5CF6` (traço).
 - `ElisaMark` (`src/components/shared/ElisaMark.tsx`) renderiza a marca em `currentColor`, acompanhando a cor do contexto; na sidebar e no cabeçalho móvel ela usa `text-primary`. A marca é decorativa (`aria-hidden`).
-- O ícone do aplicativo é o mesmo triângulo sobre um quadrado de 32×32 com raio 8 e fundo `#0B0B0D`.
+- O ícone do aplicativo é o mesmo triângulo com fundo transparente, referenciado em favicon, `elisa.ico` e na barra de tarefas. Não há quadrado de fundo.
 - Arquivos gerados por `scripts/generate_brand_assets.py` (Pillow):
   - `assets/brand/elisa-mark.svg`, `assets/brand/elisa-icon.svg`, `assets/brand/elisa-icon-{16,32,48,64,128,256,512}.png` e `assets/brand/elisa.ico` (16 a 256 px);
   - `frontend/public/favicon.svg`, `frontend/public/favicon-32x32.png` e `frontend/public/apple-touch-icon.png` (180 px), referenciados em `frontend/index.html`.
-- O ícone da janela do pywebview é o `assets/brand/elisa.ico`, aplicado por `webview.start(icon=...)` em `elisa_desktop.py`.
+- O ícone da janela do pywebview é o `assets/brand/elisa.ico`, aplicado por `webview.start(icon=...)` em `elisa_desktop.py`. O processo define `AppUserModelID` próprio antes de abrir a janela; sem isso o Windows agrupa o launcher sob o ícone do Python na barra de tarefas.
 - O launcher recebe a mesma marca por injeção entre `<!-- ELISA_MARK:START -->` e `<!-- ELISA_MARK:END -->` em `desktop/launcher.html`.
 - Para regenerar: `python -m pip install pillow` e `python scripts/generate_brand_assets.py`. `python scripts/generate_brand_assets.py --check` informa se os arquivos versionados estão desatualizados.
 
@@ -120,6 +120,7 @@ Compartilhados:
 - `ActivityStats`, `ActivityCard`, `ContributionCalendar`, `MiniContributionGrid`, `ProgressEntryDialog`, `DeleteProgressEntryDialog`.
 - `DiaryComposer`, `DiaryEntryList`, `DiaryEntryDialog`, `DiaryEditorDialog`, `DeleteDiaryEntryDialog`.
 - `MediaCard`, `MediaBadges`, `MediaProgressBar`, `MediaItemDialog`, `MediaEventDialog`, `MediaConfirmDialog`.
+- `LevelProgressCard`, `ProfileStatCards`, `CategoryBreakdown`, `XpHistoryList`.
 
 ## Página inicial
 
@@ -179,6 +180,17 @@ Compartilhados:
 - O diálogo de item separa identificação (tipo, título, criador, ano), classificação (gêneros, estado, avaliação), totais e durações, progresso manual, datas, arquivamento e observações.
 - Estatísticas distinguem quantidade, tempo real, tempo estimado e eventos sem tempo; não somam estimativas ao tempo real.
 - Filtros e busca ficam em uma faixa única acima da grade; estados vazios explicam o próximo passo real (adicionar mídia ou registrar consumo).
+
+## Perfil e EXP
+
+- O perfil usa a mesma linguagem escura dos demais módulos, com um cartão de nível em destaque e uma coluna lateral de estatísticas e categorias.
+- O cartão de nível mostra o número em `font-mono`, EXP acumulado, progresso dentro do nível, EXP restante e o início do próximo nível. A barra roxa é fina, com `role="progressbar"`, `aria-valuemin`, `aria-valuemax` e `aria-valuenow`.
+- O brilho roxo desfocado no canto é o único efeito decorativo; não compete com números ou ações.
+- Estatísticas aparecem em cartões compactos: ocorrências de hábitos, semanas concluídas e EXP de hábitos. Os valores usam `font-mono`.
+- A distribuição por categoria usa barras proporcionais neutras com preenchimento de identidade e rótulo textual; nesta versão há apenas Hábitos.
+- O extrato lista descrição, categoria, data da ocorrência e valor assinado. Concessões usam verde e estornos vermelho, mas o sinal (`+`/`−`) e a descrição também comunicam o estado; a cor nunca é o único indicador.
+- Estado vazio explica que a primeira conclusão de hábito concede EXP e oferece um caminho para Atividades. Não há gráficos, medalhas ou recompensas fictícias. Se o saldo voltar a zero por estornos, o extrato continua visível para preservar a auditoria.
+- Carregamento, erro com nova tentativa e layout responsivo seguem `LoadingState`, `ErrorState` e os cartões compartilhados.
 
 ## Janela de controle desktop
 

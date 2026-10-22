@@ -79,7 +79,7 @@ Vários registros podem existir no mesmo dia. A unidade original é preservada; 
 ### Comum aos dois tipos
 
 - Datas futuras são rejeitadas com 422.
-- Excluir uma atividade remove conclusões e registros quantitativos em cascata.
+- Excluir uma atividade estorna o EXP líquido das origens daquela atividade e depois remove conclusões e registros quantitativos em cascata. O extrato permanece.
 - A listagem inclui os últimos 84 dias para a prévia dos cards.
 - O histórico aceita intervalo de até 800 dias; sem parâmetros, usa os últimos 365 dias.
 - O campo `archived` existe na API, no serializer e na listagem (`includeArchived`); a interface ainda não oferece uma ação de arquivar.
@@ -117,6 +117,14 @@ Vários registros podem existir no mesmo dia. A unidade original é preservada; 
   - `daily[]`: data, quantidade, número de registros e `goalMet` por dia com registro.
 - Na grade, a frequência diária destaca dias com meta atingida; frequências semanal e mensal destacam dias com registro. O cumprimento é avaliado nas estatísticas por período.
 - No resumo de hoje, `completedToday` significa que a meta do período atual foi atingida — no caso semanal ou mensal, não necessariamente hoje.
+
+### Integração com EXP
+
+- Criar, editar ou remover conclusões e registros sincroniza o EXP da atividade no serviço central; a regra não vive neste módulo nem no frontend.
+- Hábito binário concede 1 EXP por dia concluído. Hábito mensurável concede 1 EXP por período cumprido (dia, semana ou mês, conforme a frequência).
+- Semana completa concede 7 EXP adicionais para hábitos diários e semanais; registros parciais não pontuam.
+- Editar data, quantidade ou conclusão recalcula o saldo, com estorno quando necessário.
+- Regras completas, extrato e fórmula de níveis em [profile.md](profile.md) e [ADR-013](../decisions/ADR-013-exp-ledger.md).
 
 ## API
 
@@ -332,9 +340,13 @@ Resposta `201` com `{ "activity": { ... } }`. Para hábito binário, envie `kind
 - `app/api/serializers.py`
 - `app/services/activity_service.py`
 - `app/services/measurement_service.py`
+- `app/services/xp_service.py` (sincronização chamada pelas mutações)
+- `app/repositories/xp_repository.py`
+- `app/models/xp.py`
 - `app/repositories/activity_repository.py`
 - `app/models/activity.py`
 - `backend/migrations/versions/3c75e125a588_measurable_habits_and_media_tracker.py`
+- `backend/migrations/versions/1cd28703a86b_add_xp_events_ledger.py`
 
 ## Testes
 
@@ -342,7 +354,8 @@ Backend (`backend/tests/`):
 
 - `test_activities.py` e `test_logs.py`: CRUD, validação, sequências, filtros, cascata e resumo de hoje do modelo binário;
 - `test_habits.py` (11 testes): unidades padrão e personalizadas, múltiplos registros, conversão compatível, rejeição de grandezas incompatíveis, troca de unidade com conversão de meta, frequência semanal, hábito sem meta, validação, bloqueio de troca de tipo e persistência;
-- `test_migrations.py`: migração preserva atividades e conclusões existentes e semeia unidades e tipos.
+- `test_xp.py` (10 testes): concessão, bônus, idempotência, backfill histórico, estorno, registros parciais, edição, exclusão de atividade e hábito arquivado;
+- `test_migrations.py`: migração preserva atividades e conclusões existentes, semeia unidades e tipos e cria/remove `xp_events`.
 
 Frontend:
 
@@ -354,7 +367,8 @@ Frontend:
 ## Limitações e evolução
 
 - Não há lembretes, notificações ou criação automática de registros.
-- Metas não geram conquistas nem gamificação.
+- Metas não geram conquistas; o EXP é concedido por ocorrência e bônus semanal, sem medalhas.
+- Não há recorrência personalizada por dia da semana; a frequência semanal é o caso mais próximo.
 - A interface não oferece arquivamento de atividades, embora a API e a serialização já aceitem o campo.
 - Categoria é texto livre, sem normalização além de trim.
 - A listagem carrega todos os logs e registros quantitativos para calcular estatísticas.

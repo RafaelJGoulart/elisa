@@ -30,6 +30,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Atividades', icon: 'activity', to: '/atividades' },
   { label: 'Diário', icon: 'feather', to: '/diario' },
   { label: 'Mídia', icon: 'film', to: '/midia' },
+  { label: 'Perfil', icon: 'user', to: '/perfil' },
   { label: 'Conhecimento', icon: 'book-open', planned: true },
   { label: 'Projetos', icon: 'folder', planned: true },
   { label: 'IA', icon: 'cpu', planned: true },

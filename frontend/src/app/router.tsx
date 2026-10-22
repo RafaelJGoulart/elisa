@@ -8,6 +8,7 @@ import { HomePage } from '@/features/home/HomePage'
 import { MediaDetailPage } from '@/features/media/pages/MediaDetailPage'
 import { MediaPage } from '@/features/media/pages/MediaPage'
 import { MediaStatsPage } from '@/features/media/pages/MediaStatsPage'
+import { ProfilePage } from '@/features/profile/pages/ProfilePage'
 import { NotFoundPage } from '@/app/NotFoundPage'
 import { RouteErrorPage } from '@/app/RouteErrorPage'
 
@@ -24,6 +25,7 @@ export const router = createBrowserRouter([
       { path: 'midia', element: <MediaPage /> },
       { path: 'midia/estatisticas', element: <MediaStatsPage /> },
       { path: 'midia/:id', element: <MediaDetailPage /> },
+      { path: 'perfil', element: <ProfilePage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },

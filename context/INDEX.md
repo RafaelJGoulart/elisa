@@ -2,7 +2,7 @@
 
 Ponto de entrada da memória documental do projeto. Leia apenas o que for relevante para a tarefa atual.
 
-**Estado documentado:** v0.2.0 — 2026-10-22
+**Estado documentado:** v0.2.0 com perfil e EXP — 2026-10-22
 
 ## Comece aqui
 
@@ -22,6 +22,7 @@ Ponto de entrada da memória documental do projeto. Leia apenas o que for releva
 - [Atividades](modules/activities.md) — hábitos binários e mensuráveis, unidades, metas, histórico e sequências.
 - [Diário](modules/diary.md) — escrita livre em Markdown, índice SQLite reconstruível, busca e edição.
 - [Mídia](modules/media.md) — catálogo local, tipos, gêneros, eventos de consumo, progresso e estatísticas.
+- [Perfil e EXP](modules/profile.md) — nível, progresso, estatísticas, categorias e extrato de eventos.
 - Conhecimento, Projetos e IA existem apenas como estado planejado na interface. Não há implementação.
 
 ## Operação desktop
@@ -42,6 +43,15 @@ Ponto de entrada da memória documental do projeto. Leia apenas o que for releva
 - [ADR-010 — Launcher desktop local com pywebview](decisions/ADR-010-launcher-desktop-pywebview.md)
 - [ADR-011 — Hábitos mensuráveis sobre a entidade de atividades](decisions/ADR-011-habitos-mensuraveis.md)
 - [ADR-012 — Catálogo local de mídia com eventos de consumo](decisions/ADR-012-media-tracker.md)
+- [ADR-013 — EXP centralizado em extrato de eventos](decisions/ADR-013-exp-ledger.md)
+- [ADR-014 — Agentes especializados e delegação](decisions/ADR-014-agentes-especializados-e-delegacao.md)
+
+## Agentes de programação
+
+- [ADR-014 — Agentes especializados e delegação](decisions/ADR-014-agentes-especializados-e-delegacao.md)
+- Skill nativa [delegação e trabalho paralelo](../.opencode/skills/delegation-workflow/SKILL.md).
+- Skill nativa [contexto da Elisa](../.opencode/skills/elisa-context/SKILL.md).
+- Subagentes: [database-specialist](../.opencode/agent/database-specialist.md), [backend-specialist](../.opencode/agent/backend-specialist.md), [frontend-specialist](../.opencode/agent/frontend-specialist.md) e [test-review-specialist](../.opencode/agent/test-review-specialist.md).
 
 ## Skills operacionais
 
@@ -50,6 +60,7 @@ Ponto de entrada da memória documental do projeto. Leia apenas o que for releva
 - [Criar ou alterar UI React](skills/react-ui.md)
 - [Criar migração de banco](skills/database-migration.md)
 - [Persistência Markdown e índice](skills/markdown-persistence.md)
+- [Adicionar uma fonte de EXP](skills/xp-system.md)
 - [Escrever e executar testes](skills/testing.md)
 - [Atualizar a documentação](skills/update-docs.md)
 - [Backup e restauração do banco](skills/backup-restore.md)
@@ -60,7 +71,9 @@ Ponto de entrada da memória documental do projeto. Leia apenas o que for releva
 - **Nova funcionalidade de backend:** ARCHITECTURE → CONVENTIONS → módulo afetado → skill `add-api-endpoint`.
 - **Nova tela ou componente:** DESIGN_SYSTEM → CONVENTIONS → skill `react-ui`.
 - **Alteração de dados:** ARCHITECTURE → DECISIONS → skill `database-migration` → skill `backup-restore`.
+- **Nova regra de EXP:** módulo Perfil e EXP → ADR-013 → skill `xp-system`.
 - **Novo módulo:** PROJECT → MODULES → DECISIONS → skill `create-module`.
+- **Delegação:** AGENTS → esta seção → skill nativa `delegation-workflow` → subagente especializado.
 - **Retomada geral:** este índice → ROADMAP → AI_CONTEXT.
 
 ## Manutenção

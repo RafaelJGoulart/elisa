@@ -12,6 +12,7 @@ from app.models.media import (
     MediaType,
     media_item_genres,
 )
+from app.models.xp import XpEvent
 
 __all__ = [
     "Activity",
@@ -23,5 +24,6 @@ __all__ = [
     "MediaConsumptionEvent",
     "MediaItem",
     "MediaType",
+    "XpEvent",
     "media_item_genres",
 ]

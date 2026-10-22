@@ -8,7 +8,7 @@ from typing import Any, Iterable
 from app.core.errors import ConflictError, NotFoundError, ValidationError
 from app.models import Activity, ActivityLog, ActivityProgressEntry, MeasurementUnit
 from app.repositories import activity_repository as repository
-from app.services import measurement_service
+from app.services import measurement_service, xp_service
 
 VALID_COLORS = {"purple", "magenta", "red", "green", "blue", "yellow", "orange"}
 VALID_KINDS = {"binary", "measurable"}
@@ -94,7 +94,7 @@ def compute_stats(dates: Iterable[date], today: date | None = None) -> ActivityS
     )
 
 
-def _period_bounds(day: date, frequency: str) -> tuple[date, date]:
+def period_bounds(day: date, frequency: str) -> tuple[date, date]:
     if frequency == "daily":
         return day, day
     if frequency == "weekly":
@@ -106,7 +106,7 @@ def _period_bounds(day: date, frequency: str) -> tuple[date, date]:
 
 
 def _period_start(day: date, frequency: str) -> date:
-    return _period_bounds(day, frequency)[0]
+    return period_bounds(day, frequency)[0]
 
 
 def _shift_period(start: date, frequency: str, direction: int = -1) -> date:
@@ -185,13 +185,13 @@ def compute_measurable_stats(
         else Decimal("0")
     )
 
-    current_start, current_end = _period_bounds(current_day, frequency)
+    current_start, current_end = period_bounds(current_day, frequency)
     current_amount = period_totals.get(current_start, Decimal("0"))
     current_met = current_start in met_periods
     current_percent = _percent(current_amount, target) if target is not None else None
 
-    week_start, week_end = _period_bounds(current_day, "weekly")
-    month_start, month_end = _period_bounds(current_day, "monthly")
+    week_start, week_end = period_bounds(current_day, "weekly")
+    month_start, month_end = period_bounds(current_day, "monthly")
     week_amount = sum(
         (
             amount
@@ -536,12 +536,15 @@ def update_activity(activity_id: int, payload: Any) -> Activity:
 
     for key, value in cleaned.items():
         setattr(activity, key, value)
+    repository.flush()
+    xp_service.sync_activity(activity.id)
     repository.commit()
     return activity
 
 
 def delete_activity(activity_id: int) -> None:
     activity = _require_activity(activity_id)
+    xp_service.revoke_activity(activity.id)
     repository.delete_activity(activity)
     repository.commit()
 
@@ -569,6 +572,8 @@ def register_log(activity_id: int, payload: Any) -> tuple[ActivityLog, ActivityS
 
     log = ActivityLog(activity_id=activity_id, date=log_date)
     repository.add_log(log)
+    repository.flush()
+    xp_service.sync_activity(activity_id)
     repository.commit()
     return log, compute_stats(repository.list_log_dates(activity_id))
 
@@ -585,6 +590,8 @@ def remove_log(activity_id: int, raw_date: Any) -> None:
     if log is None:
         raise NotFoundError("Registro não encontrado.")
     repository.delete_log(log)
+    repository.flush()
+    xp_service.sync_activity(activity_id)
     repository.commit()
 
 
@@ -665,6 +672,8 @@ def register_progress(
     cleaned = _validate_progress_payload(activity, payload)
     entry = ActivityProgressEntry(activity_id=activity_id, **cleaned)
     repository.add_progress_entry(entry)
+    repository.flush()
+    xp_service.sync_activity(activity_id)
     repository.commit()
     stats = compute_measurable_stats(
         activity, repository.list_progress_entries(activity_id)
@@ -682,6 +691,8 @@ def update_progress(
     cleaned = _validate_progress_payload(activity, payload, current=entry)
     for key, value in cleaned.items():
         setattr(entry, key, value)
+    repository.flush()
+    xp_service.sync_activity(activity_id)
     repository.commit()
     stats = compute_measurable_stats(
         activity, repository.list_progress_entries(activity_id)
@@ -696,6 +707,8 @@ def remove_progress(activity_id: int, entry_id: int) -> None:
     if entry is None:
         raise NotFoundError("Registro de progresso não encontrado.")
     repository.delete_progress_entry(entry)
+    repository.flush()
+    xp_service.sync_activity(activity_id)
     repository.commit()
 
 

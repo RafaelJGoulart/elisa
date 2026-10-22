@@ -48,6 +48,29 @@ Migrações (a partir de `backend/`):
 ..\.venv\Scripts\flask.exe --app run db upgrade
 ```
 
+## Agentes especializados
+
+Subagentes disponíveis em `.opencode/agent/`:
+
+| Agente | Use para |
+| --- | --- |
+| `database-specialist` | Modelos SQLAlchemy, repositories, migrações, integridade e testes de persistência. |
+| `backend-specialist` | Rotas Flask, serviços, validação, contratos JSON, erros e testes de API. |
+| `frontend-specialist` | React, TypeScript, Tailwind, componentes, acessibilidade e testes de UI. |
+| `test-review-specialist` | Cobertura, regressões, arquitetura, segurança e revisão antes da conclusão. |
+
+O agente principal continua responsável por investigar, dividir o trabalho, revisar o diff, executar a validação final e atualizar a documentação.
+
+1. Carregue a skill nativa `delegation-workflow` ao planejar delegação ou trabalho paralelo.
+2. Delegue apenas tarefas delimitadas, com objetivo, escopo, restrições, validação e saída esperada.
+3. Subagentes não devem invocar outros subagentes nem tomar decisões de produto ou arquitetura.
+4. Rode trabalhos independentes em paralelo apenas quando não houver arquivos ou contratos sobrepostos.
+5. Não delegue commit, push, merge, rebase, publicação ou acesso a dados pessoais.
+6. Exija evidência real de testes; não aceite relatos sem comandos e resultados.
+7. Após criar ou alterar agentes, skills ou configuração, reinicie o OpenCode.
+
+Worktrees manuais exigem autorização explícita, um commit base existente e remoção apenas de árvores limpas. Não implemente automação de worktrees nesta fase.
+
 ## Regras obrigatórias
 
 - Mantenha a arquitetura modular: UI não contém regra de negócio; rotas não contêm SQL; acesso a dados passa por repositories.
@@ -57,6 +80,7 @@ Migrações (a partir de `backend/`):
 - Datas de registro são datas locais `YYYY-MM-DD`; timestamps de criação são UTC em ISO 8601 com `Z`.
 - Cores de atividade são chaves da paleta (`purple`, `magenta`, `red`, `green`, `blue`, `yellow`, `orange`), não hexadecimais.
 - Unidades de hábito só convertem dentro da mesma dimensão; unidades personalizadas nunca são convertidas. Em mídia, unidades diferentes são agregadas separadamente, e tempo estimado nunca é apresentado como real.
+- EXP e níveis são centralizados no backend sobre `xp_events` append-only. Não duplique fórmulas ou concessões no frontend nem crie um segundo sistema de XP; hábitos são a única fonte nesta versão.
 - Não adicione bibliotecas que dupliquem responsabilidades existentes. Ícones: apenas Feather via `components/shared/Icon.tsx`.
 - Não simule IA, dados fictícios ou funcionalidades não implementadas. Estados "planejado"/"indisponível" devem ser honestos.
 - Diário: Markdown é a fonte canônica; o SQLite é apenas índice reconstruível e não guarda o corpo. Preserve escrita atômica, validação de IDs e confinamento de caminhos em `DIARY_DIR`.
@@ -68,4 +92,5 @@ Migrações (a partir de `backend/`):
 
 ## Skills disponíveis
 
-Consulte `context/skills/` para procedimentos repetíveis: novo módulo, endpoint Flask, UI React, launcher desktop, migração de banco, testes e atualização de documentação.
+- `context/skills/` — procedimentos do projeto: novo módulo, endpoint Flask, UI React, launcher desktop, migração de banco, testes e atualização de documentação.
+- `.opencode/skills/` — skills nativas do OpenCode: `delegation-workflow` e `elisa-context`. Não duplique o conteúdo de `context/`; referencie.

@@ -30,7 +30,7 @@ Não há microserviços, filas, cache externo ou banco remoto. O Diário usa Mar
 - `src/app/` — composição do app, router e página 404.
 - `src/components/ui/` — componentes base no estilo shadcn/ui (Button, Dialog, AlertDialog, Dropdown, Input, Tooltip etc.).
 - `src/components/shared/` — Icon, AppShell, PageHeader, estados de carregamento/erro/vazio, ToastProvider, seletor de cor.
-- `src/features/<modulo>/` — páginas, componentes e tipos do módulo (`activities`, `media`, `diary`, `home`).
+- `src/features/<modulo>/` — páginas, componentes e tipos do módulo (`activities`, `media`, `diary`, `profile`, `home`).
 - `src/services/` — contratos tipados com a API; nenhum componente chama `fetch` diretamente.
 - `src/lib/` — cliente HTTP, datas, cores, formatação, regras de apresentação de mídia, validação do Diário e utilitários.
 - `src/hooks/` — hooks reutilizáveis, incluindo `useAsyncResource`.
@@ -53,6 +53,7 @@ Não há microserviços, filas, cache externo ou banco remoto. O Diário usa Mar
 - `/midia/estatisticas` — estatísticas de quantidade, tempo e histórico mensal.
 - `/midia/:id` — detalhe, progresso, consumos e edição.
 - `/diario` — escrita, busca, filtro por mês, leitura e edição de registros.
+- `/perfil` — nível, EXP, estatísticas, categorias e extrato recente.
 - `*` — página não encontrada.
 
 ## Backend
@@ -101,6 +102,7 @@ Prefixo `/api`. JSON em `camelCase`; banco e código Python em `snake_case`.
 | GET | `/api/units` | Lista unidades de medida, incluindo as padrão. |
 | POST | `/api/units` | Cria unidade personalizada `{ "name", "symbol" }`. |
 | GET | `/api/today` | Resumo de hoje por atividade, com estatísticas. |
+| GET | `/api/profile` | Perfil com nível, EXP, estatísticas, categorias e extrato recente. |
 | GET | `/api/media/types` | Lista tipos de mídia e unidades aceitas. |
 | POST | `/api/media/types` | Cria tipo personalizado. |
 | GET | `/api/media/genres` | Lista gêneros existentes. |
@@ -212,12 +214,21 @@ A classificação de tempo (`real`, `estimated`, `unknown`), a contagem única d
 
 Detalhes do formato Markdown e das regras em [modules/diary.md](modules/diary.md).
 
+### `xp_events` (extrato)
+
+- `id`, `event_key` (único), `activity_id` (sem FK), `source`, `source_ref`, `category`, `kind`, `reason`, `description`, `amount`, `activity_date`, `recorded_at`
+- Extrato append-only; o saldo é `SUM(amount)` e correções usam sinal oposto
+- `event_key` combina origem lógica e geração; a sincronização é idempotente
+- `activity_id` é referência histórica e não é apagado em cascata, preservando o extrato após excluir a atividade
+- Apenas hábitos geram eventos nesta versão; regras, origens e fórmula de níveis em [modules/profile.md](modules/profile.md) e [ADR-013](decisions/ADR-013-exp-ledger.md)
+
 ## Persistência e migrações
 
 - SQLite em `data/elisa.db`.
 - Diário em Markdown sob `data/diary/AAAA/MM/<id>-<slug>.md`; o SQLite é índice auxiliar.
 - Migrações Alembic em `backend/migrations/`.
 - A migração `3c75e125a588` adiciona hábitos mensuráveis e o acervo de mídia, semeia unidades e tipos e preserva registros existentes. Ela desativa temporariamente as foreign keys do SQLite durante a recriação em lote de `activities` para não apagar `activity_logs`.
+- A migração `1cd28703a86b` adiciona `xp_events`; dados históricos de hábitos são sincronizados de forma idempotente na primeira leitura de `/api/profile`. Faça backup antes de migrar.
 - Nenhuma tabela é criada automaticamente em produção; use `flask db upgrade`.
 - Testes criam esquema isolado com `db.create_all()` em banco temporário.
 - Backup consistente do banco: `scripts/backup_db.py` (API de backup do SQLite).
@@ -233,7 +244,7 @@ Detalhes do formato Markdown e das regras em [modules/diary.md](modules/diary.md
 
 - Ponto de entrada: `elisa_desktop.py`; atalho: `iniciar_elisa.cmd`.
 - Janela de controle: `desktop/launcher.html`. Ela mostra o estado do serviço, o endereço local, **Abrir Elisa** e **Encerrar Elisa**. A interface React não é carregada dentro dela.
-- Ícone da janela: `assets/brand/elisa.ico`, aplicado por `webview.start(icon=...)`. O arquivo é gerado por `scripts/generate_brand_assets.py` a partir de `frontend/src/brand/mark.json`.
+- Ícone da janela: `assets/brand/elisa.ico` (triângulo com fundo transparente), aplicado por `webview.start(icon=...)`. O arquivo é gerado por `scripts/generate_brand_assets.py` a partir de `frontend/src/brand/mark.json`. O processo define `AppUserModelID` próprio (`Elisa.Desktop`) antes de abrir a janela para que a barra de tarefas use o ícone da marca, não o do Python.
 - A aplicação principal continua aberta no navegador padrão, em `http://127.0.0.1:<porta>`.
 - Dependências opcionais: `pywebview` e `waitress` em `backend/requirements-desktop.txt`; o backend e os testes não dependem delas.
 - O launcher valida `frontend/dist/index.html` e o esquema do banco antes de iniciar o servidor. Migrações continuam explícitas.
@@ -263,5 +274,7 @@ Detalhes do formato Markdown e das regras em [modules/diary.md](modules/diary.md
 - O backup do SQLite não inclui `data/diary/`.
 - Bundle inicial único; code splitting será considerado quando o número de módulos crescer.
 - Categoria é texto livre com sugestões; não existe entidade de categoria.
-- Sem testes end-to-end de navegador; testes cobrem API, persistência, migração, calendário, formulários e componentes de Atividades, Diário e Mídia.
+- EXP existe apenas para hábitos; Mídia, Diário, Projetos e Conhecimento não pontuam. O extrato é lido integralmente para calcular o total e a sincronização percorre todos os hábitos ao abrir o perfil.
+- Não há recorrência personalizada por dia da semana; a frequência semanal é o caso suportado. O extrato cresce com o uso e não possui edição manual.
+- Sem testes end-to-end de navegador; testes cobrem API, persistência, migração, calendário, formulários, componentes de Atividades, Diário, Mídia e Perfil, além de regras de EXP.
 - O launcher desktop não é empacotado como executável independente e exige o ambiente virtual, o build do frontend e o runtime WebView2.
