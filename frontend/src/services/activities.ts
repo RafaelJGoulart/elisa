@@ -5,8 +5,11 @@ import type {
   ActivityHistory,
   ActivityInput,
   ActivityLog,
+  ActivityProgressEntry,
   ActivityStats,
   ActivityWithStats,
+  MeasurementUnit,
+  ProgressInput,
   TodaySummary,
 } from '@/features/activities/types'
 
@@ -23,9 +26,23 @@ interface LogResponse {
   stats: ActivityStats
 }
 
+interface ProgressResponse {
+  entry: ActivityProgressEntry
+  stats: ActivityStats
+}
+
+interface UnitsResponse {
+  units: MeasurementUnit[]
+}
+
+interface UnitResponse {
+  unit: MeasurementUnit
+}
+
 export const activitiesService = {
-  async list(signal?: AbortSignal): Promise<ActivityWithStats[]> {
-    const response = await api.get<ActivityListResponse>('/activities', signal)
+  async list(signal?: AbortSignal, includeArchived = false): Promise<ActivityWithStats[]> {
+    const query = includeArchived ? '?includeArchived=true' : ''
+    const response = await api.get<ActivityListResponse>(`/activities${query}`, signal)
     return response.activities
   },
 
@@ -39,7 +56,7 @@ export const activitiesService = {
     return response.activity
   },
 
-  async update(id: number, input: ActivityInput): Promise<Activity> {
+  async update(id: number, input: Partial<ActivityInput>): Promise<Activity> {
     const response = await api.patch<ActivityResponse>(`/activities/${id}`, input)
     return response.activity
   },
@@ -64,8 +81,36 @@ export const activitiesService = {
     await api.delete(`/activities/${id}/logs/${date}`)
   },
 
+  async createProgress(id: number, input: ProgressInput): Promise<ProgressResponse> {
+    return api.post<ProgressResponse>(`/activities/${id}/progress`, input)
+  },
+
+  async updateProgress(
+    id: number,
+    entryId: number,
+    input: Partial<ProgressInput>,
+  ): Promise<ProgressResponse> {
+    return api.patch<ProgressResponse>(`/activities/${id}/progress/${entryId}`, input)
+  },
+
+  async removeProgress(id: number, entryId: number): Promise<void> {
+    await api.delete(`/activities/${id}/progress/${entryId}`)
+  },
+
   async today(signal?: AbortSignal): Promise<TodaySummary> {
     return api.get<TodaySummary>('/today', signal)
+  },
+}
+
+export const unitsService = {
+  async list(signal?: AbortSignal): Promise<MeasurementUnit[]> {
+    const response = await api.get<UnitsResponse>('/units', signal)
+    return response.units
+  },
+
+  async create(input: { name: string; symbol: string }): Promise<MeasurementUnit> {
+    const response = await api.post<UnitResponse>('/units', input)
+    return response.unit
   },
 }
 

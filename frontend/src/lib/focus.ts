@@ -7,10 +7,10 @@ type FieldRef = { current: HTMLElement | null }
  */
 export function focusFirstErroredField<K extends string>(
   errors: Partial<Record<K, string>>,
-  refs: Record<K, FieldRef>,
+  refs: Partial<Record<K, FieldRef>>,
   order: readonly K[],
 ): void {
   const first = order.find((key) => errors[key])
   if (!first) return
-  refs[first].current?.focus()
+  refs[first]?.current?.focus()
 }

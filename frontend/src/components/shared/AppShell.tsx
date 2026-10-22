@@ -29,6 +29,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Início', icon: 'home', to: '/', end: true },
   { label: 'Atividades', icon: 'activity', to: '/atividades' },
   { label: 'Diário', icon: 'feather', to: '/diario' },
+  { label: 'Mídia', icon: 'film', to: '/midia' },
   { label: 'Conhecimento', icon: 'book-open', planned: true },
   { label: 'Projetos', icon: 'folder', planned: true },
   { label: 'IA', icon: 'cpu', planned: true },
@@ -159,7 +160,7 @@ export function AppShell() {
 
         <div className="space-y-3 border-t border-border px-5 py-4">
           <HealthIndicator />
-          <p className="text-[11px] text-text-secondary">v0.1.0 · dados na sua máquina</p>
+          <p className="text-[11px] text-text-secondary">v0.2.0 · dados na sua máquina</p>
         </div>
       </aside>
 

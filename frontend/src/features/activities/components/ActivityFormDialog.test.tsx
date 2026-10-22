@@ -11,6 +11,10 @@ vi.mock('@/services/activities', () => ({
     create: vi.fn(),
     update: vi.fn(),
   },
+  unitsService: {
+    list: vi.fn().mockResolvedValue([]),
+    create: vi.fn(),
+  },
   getErrorMessage: (error: unknown) =>
     error instanceof Error ? error.message : 'Erro inesperado',
 }))
@@ -21,6 +25,11 @@ const savedActivity: Activity = {
   description: null,
   category: 'Saúde',
   color: 'green',
+  kind: 'binary',
+  frequency: 'daily',
+  unit: null,
+  targetAmount: null,
+  archived: false,
   createdAt: '2026-10-21T12:00:00Z',
   updatedAt: '2026-10-21T12:00:00Z',
 }
@@ -50,6 +59,10 @@ describe('ActivityFormDialog', () => {
         description: null,
         category: 'Saúde',
         color: 'green',
+        kind: 'binary',
+        frequency: 'daily',
+        unitId: null,
+        targetAmount: null,
       })
     })
     expect(onSaved).toHaveBeenCalledWith(savedActivity)
