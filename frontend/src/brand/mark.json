@@ -1,0 +1,16 @@
+{
+  "name": "Elisa",
+  "version": 1,
+  "viewBox": "0 0 24 24",
+  "strokeWidth": 2,
+  "triangle": "M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z",
+  "icon": {
+    "size": 32,
+    "padding": 4,
+    "radius": 8
+  },
+  "colors": {
+    "background": "#0B0B0D",
+    "primary": "#8B5CF6"
+  }
+}

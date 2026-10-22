@@ -34,7 +34,7 @@ Cada módulo tem limites explícitos, UI própria, serviço de frontend e, quand
 
 ## Início
 
-**Responsabilidade:** apresentar o dia atual, permitir registrar conclusões rapidamente e mostrar o mapa de módulos, com estados honestos para o que ainda não existe.
+**Responsabilidade:** apresentar o dia atual e permitir registrar conclusões rapidamente. A navegação entre módulos, inclusive os planejados, fica na barra lateral.
 
 **Dependências:** API de resumo diário (`/api/today`), AppShell, toast.
 
@@ -69,7 +69,9 @@ Cada módulo tem limites explícitos, UI própria, serviço de frontend e, quand
 
 **Arquivos:**
 - `elisa_desktop.py` — ciclo de vida do servidor e da janela de controle.
-- `desktop/launcher.html` — janela com estado, endereço, **Abrir Elisa**, **Encerrar Elisa** e mensagens de erro.
+- `desktop/launcher.html` — janela com estado, endereço, **Abrir Elisa**, **Encerrar Elisa** e mensagens de erro; a marca é injetada pelo gerador entre `<!-- ELISA_MARK:START -->` e `<!-- ELISA_MARK:END -->`.
+- `assets/brand/elisa.ico` — ícone da janela do pywebview, aplicado por `webview.start(icon=...)`.
+- `scripts/generate_brand_assets.py` — gera os arquivos de marca (SVG, PNG e ICO) a partir de `frontend/src/brand/mark.json`; requer Pillow.
 - `iniciar_elisa.cmd` — atalho que gera o build ausente e abre o launcher.
 - `backend/requirements-desktop.txt` — dependências opcionais.
 

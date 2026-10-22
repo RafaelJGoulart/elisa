@@ -69,8 +69,8 @@ export function TodayList() {
   const allDone = completedCount === data.activities.length
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-surface">
-      <div className="flex items-center justify-between border-b border-border px-5 py-3">
+    <div className="space-y-3">
+      <div className="flex items-center justify-between gap-3">
         <p className="text-xs text-text-secondary">
           {completedCount} de {data.activities.length}{' '}
           {data.activities.length === 1 ? 'atividade' : 'atividades'} concluídas
@@ -83,7 +83,7 @@ export function TodayList() {
         ) : null}
       </div>
 
-      <ul className="divide-y divide-border">
+      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {data.activities.map((entry) => {
           const color = getActivityColor(entry.activity.color)
           const pending = pendingId === entry.activity.id
@@ -91,37 +91,36 @@ export function TodayList() {
           return (
             <li
               key={entry.activity.id}
-              className="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between"
+              className="flex flex-col gap-2 rounded-lg border border-border bg-surface p-3"
             >
-              <div className="flex min-w-0 items-center gap-3">
-                <span
-                  className="size-2.5 shrink-0 rounded-full"
-                  style={{ backgroundColor: color.hex }}
-                  aria-hidden="true"
-                />
-                <div className="min-w-0">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex min-w-0 items-center gap-2">
+                  <span
+                    className="size-2.5 shrink-0 rounded-full"
+                    style={{ backgroundColor: color.hex }}
+                    aria-hidden="true"
+                  />
                   <Link
                     to={`/atividades/${entry.activity.id}`}
-                    className="block truncate text-sm font-medium text-foreground transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                    className="truncate text-sm font-medium text-foreground transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                   >
                     {entry.activity.name}
                   </Link>
-                  <p className="mt-0.5 flex items-center gap-2 text-[11px] text-text-secondary">
-                    <span className="truncate uppercase tracking-[0.08em]">
-                      {entry.activity.category}
-                    </span>
-                    {entry.currentStreak > 0 ? (
-                      <span className="flex items-center gap-1 text-text-secondary">
-                        <Icon name="trending-up" size={11} />
-                        {entry.currentStreak}{' '}
-                        {entry.currentStreak === 1 ? 'dia' : 'dias'} seguidos
-                      </span>
-                    ) : null}
-                  </p>
                 </div>
+                {entry.currentStreak > 0 ? (
+                  <span className="flex shrink-0 items-center gap-1 text-[11px] text-text-secondary">
+                    <Icon name="trending-up" size={11} />
+                    {entry.currentStreak}{' '}
+                    {entry.currentStreak === 1 ? 'dia seguido' : 'dias seguidos'}
+                  </span>
+                ) : null}
               </div>
 
-              <div className="flex items-center justify-between gap-4 sm:justify-end">
+              <p className="truncate text-[11px] uppercase tracking-[0.08em] text-text-secondary">
+                {entry.activity.category}
+              </p>
+
+              <div className="mt-auto flex items-end justify-between gap-3 pt-1">
                 <div className="shrink-0">
                   <MiniContributionGrid
                     dates={entry.recentLogs}

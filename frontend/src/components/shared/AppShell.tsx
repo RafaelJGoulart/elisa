@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 
 import { Icon } from '@/components/shared/Icon'
+import { ElisaMark } from '@/components/shared/ElisaMark'
 import { Badge } from '@/components/ui/badge'
 import {
   DropdownMenu,
@@ -32,24 +33,6 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Projetos', icon: 'folder', planned: true },
   { label: 'IA', icon: 'cpu', planned: true },
 ]
-
-function ElisaMark() {
-  return (
-    <svg
-      width="26"
-      height="26"
-      viewBox="0 0 32 32"
-      fill="none"
-      aria-hidden="true"
-      className="text-primary"
-    >
-      <circle cx="16" cy="16" r="9" stroke="currentColor" strokeWidth="1.5" opacity="0.45" />
-      <circle cx="16" cy="16" r="4" stroke="currentColor" strokeWidth="1.5" />
-      <circle cx="16" cy="16" r="1.6" fill="currentColor" />
-      <circle cx="24.5" cy="10" r="1.8" fill="currentColor" />
-    </svg>
-  )
-}
 
 function HealthIndicator() {
   const loadHealth = useCallback((signal: AbortSignal) => systemService.health(signal), [])
@@ -160,7 +143,7 @@ export function AppShell() {
 
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-border bg-surface/40 lg:flex">
         <div className="flex h-16 items-center gap-3 px-5">
-          <ElisaMark />
+          <ElisaMark className="text-primary" />
           <div className="min-w-0">
             <p className="text-sm font-semibold tracking-tight text-foreground">Elisa</p>
             <p className="text-[11px] text-text-secondary">ambiente pessoal</p>
@@ -182,7 +165,7 @@ export function AppShell() {
 
       <header className="sticky top-0 z-30 flex h-[calc(3.5rem+env(safe-area-inset-top))] items-center justify-between border-b border-border bg-background/90 px-4 pt-[env(safe-area-inset-top)] backdrop-blur-sm lg:hidden">
         <NavLink to="/" className="flex items-center gap-2.5">
-          <ElisaMark />
+          <ElisaMark size={24} className="text-primary" />
           <span className="text-sm font-semibold tracking-tight text-foreground">Elisa</span>
         </NavLink>
 

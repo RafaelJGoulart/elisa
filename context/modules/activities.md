@@ -143,9 +143,9 @@ Sem parâmetros, usa os últimos 365 dias. `start` deve ser anterior a `end`.
 ### Início (`/`)
 
 - Saudação e data por extenso.
-- Lista "Hoje" com todas as atividades, sequência atual, mini grade das últimas 12 semanas e botão para registrar/desfazer.
+- Grade de cartões finos com todas as atividades do dia (até 3 por linha), cada um com nome, categoria, sequência atual, mini grade das últimas 12 semanas e botão para registrar/desfazer.
 - Contagem de concluídas e mensagem quando tudo foi concluído.
-- Cards de módulos; Atividades e Diário estão ativos, os demais permanecem planejados.
+- A navegação entre módulos fica na barra lateral; a tela inicial não repete o mapa de módulos.
 
 ### Lista (`/atividades`)
 

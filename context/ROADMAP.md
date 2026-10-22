@@ -17,7 +17,8 @@ Legenda: **Concluído** = implementado, testado e documentado. **Em andamento** 
 ### Interface
 
 - [x] Shell responsivo com navegação, skip link e indicador real de saúde do servidor.
-- [x] Página inicial com saudação, resumo de hoje e mapa de módulos.
+- [x] Página inicial com saudação e resumo de hoje em cartões (até 3 por linha); a navegação entre módulos fica na barra lateral.
+- [x] Identidade visual: triângulo do Feather como marca, com favicon, ícones do aplicativo e ícone da janela do launcher gerados por script a partir de uma geometria única.
 - [x] Estados de carregamento, vazio e erro.
 - [x] Toasts acessíveis e confirmação de exclusão.
 

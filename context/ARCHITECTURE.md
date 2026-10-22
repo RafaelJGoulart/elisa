@@ -46,7 +46,7 @@ Não há microserviços, filas, cache externo ou banco remoto. O Diário usa Mar
 
 ### Roteamento
 
-- `/` — início, resumo de hoje e mapa de módulos.
+- `/` — início e resumo de hoje.
 - `/atividades` — lista e gestão de atividades.
 - `/atividades/:id` — histórico, estatísticas e registro diário.
 - `/diario` — escrita, busca, filtro por mês, leitura e edição de registros.
@@ -159,6 +159,7 @@ Detalhes do formato Markdown e das regras em [modules/diary.md](modules/diary.md
 
 - Ponto de entrada: `elisa_desktop.py`; atalho: `iniciar_elisa.cmd`.
 - Janela de controle: `desktop/launcher.html`. Ela mostra o estado do serviço, o endereço local, **Abrir Elisa** e **Encerrar Elisa**. A interface React não é carregada dentro dela.
+- Ícone da janela: `assets/brand/elisa.ico`, aplicado por `webview.start(icon=...)`. O arquivo é gerado por `scripts/generate_brand_assets.py` a partir de `frontend/src/brand/mark.json`.
 - A aplicação principal continua aberta no navegador padrão, em `http://127.0.0.1:<porta>`.
 - Dependências opcionais: `pywebview` e `waitress` em `backend/requirements-desktop.txt`; o backend e os testes não dependem delas.
 - O launcher valida `frontend/dist/index.html` e o esquema do banco antes de iniciar o servidor. Migrações continuam explícitas.

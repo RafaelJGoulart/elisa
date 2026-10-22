@@ -83,6 +83,19 @@ Escala usada:
 - Botões apenas com ícone sempre têm `aria-label` e tooltip quando o símbolo não é óbvio.
 - Nomes Feather são referenciados por string (`activity`, `calendar`, `trash-2`).
 
+## Marca
+
+- A marca da Elisa é o triângulo do Feather Icons (`triangle`), desenhado **apenas com o traço**: sem preenchimento e sem núcleo central.
+- Geometria e cores ficam em `frontend/src/brand/mark.json`, fonte única de verdade: `viewBox` 24×24, `strokeWidth` 2, o traço `M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z` e as cores `#8B5CF6` (traço) e `#0B0B0D` (fundo do ícone).
+- `ElisaMark` (`src/components/shared/ElisaMark.tsx`) renderiza a marca em `currentColor`, acompanhando a cor do contexto; na sidebar e no cabeçalho móvel ela usa `text-primary`. A marca é decorativa (`aria-hidden`).
+- O ícone do aplicativo é o mesmo triângulo sobre um quadrado de 32×32 com raio 8 e fundo `#0B0B0D`.
+- Arquivos gerados por `scripts/generate_brand_assets.py` (Pillow):
+  - `assets/brand/elisa-mark.svg`, `assets/brand/elisa-icon.svg`, `assets/brand/elisa-icon-{16,32,48,64,128,256,512}.png` e `assets/brand/elisa.ico` (16 a 256 px);
+  - `frontend/public/favicon.svg`, `frontend/public/favicon-32x32.png` e `frontend/public/apple-touch-icon.png` (180 px), referenciados em `frontend/index.html`.
+- O ícone da janela do pywebview é o `assets/brand/elisa.ico`, aplicado por `webview.start(icon=...)` em `elisa_desktop.py`.
+- O launcher recebe a mesma marca por injeção entre `<!-- ELISA_MARK:START -->` e `<!-- ELISA_MARK:END -->` em `desktop/launcher.html`.
+- Para regenerar: `python -m pip install pillow` e `python scripts/generate_brand_assets.py`. `python scripts/generate_brand_assets.py --check` informa se os arquivos versionados estão desatualizados.
+
 ## Componentes
 
 Base no estilo shadcn/ui, com Radix UI para comportamento acessível:
@@ -106,6 +119,14 @@ Compartilhados:
 - `ColorSwatchPicker` — seleção acessível de cor por rádio nativo.
 - `ActivityStats`, `ActivityCard`, `ContributionCalendar`, `MiniContributionGrid`.
 - `DiaryComposer`, `DiaryEntryList`, `DiaryEntryDialog`, `DiaryEditorDialog`, `DeleteDiaryEntryDialog`.
+
+## Página inicial
+
+- A tela inicial tem três blocos: saudação com data por extenso, resumo de hoje e aviso local-first.
+- Não há mapa de módulos na tela inicial. A navegação entre módulos fica na sidebar (e no menu móvel), que já rotula os módulos planejados como "em breve".
+- As atividades do dia são cartões finos em grade: 1 coluna no celular, 2 a partir de `sm` e 3 a partir de `lg` (`grid gap-3 sm:grid-cols-2 lg:grid-cols-3`).
+- Cada cartão traz cor, nome (link para o detalhe), categoria, sequência atual, prévia de 12 semanas e o botão de registrar/desfazer. O `mt-auto` alinha os botões entre cartões com alturas diferentes.
+- O resumo "X de Y atividades concluídas" fica acima da grade, fora de um painel próprio, com "Tudo feito por hoje" quando tudo foi concluído.
 
 ## Grade de contribuições
 

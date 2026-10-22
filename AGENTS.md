@@ -14,6 +14,7 @@ Instruções para agentes de programação que retomam este projeto.
 - Frontend: `frontend/` — React + TypeScript + Vite + Tailwind 4; componentes em `src/components/ui` e `src/components/shared`; módulos em `src/features/activities` e `src/features/diary`.
 - Backend: `backend/` — Flask app factory em `backend/app/__init__.py`; rotas em `backend/app/api`; regras em `backend/app/services`; dados em `backend/app/repositories`; modelos em `backend/app/models`.
 - Launcher: `elisa_desktop.py` e `desktop/launcher.html` — janela de controle opcional; a interface React continua no navegador.
+- Marca: `frontend/src/brand/mark.json` (geometria única) e `assets/brand/` (SVG, PNG e ICO gerados); regenere com `python scripts/generate_brand_assets.py` (requer Pillow).
 - Dados: `data/elisa.db` (SQLite) e `data/diary/` (Markdown canônico do Diário), ambos ignorados pelo Git. Nunca versione bancos, backups, `.env` ou segredos.
 - Documentação: `context/` (Markdown, links relativos).
 

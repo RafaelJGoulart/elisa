@@ -21,6 +21,7 @@ ROOT_DIR = Path(__file__).resolve().parent
 BACKEND_DIR = ROOT_DIR / "backend"
 FRONTEND_INDEX = ROOT_DIR / "frontend" / "dist" / "index.html"
 LAUNCHER_TEMPLATE = ROOT_DIR / "desktop" / "launcher.html"
+LAUNCHER_ICON = ROOT_DIR / "assets" / "brand" / "elisa.ico"
 LOG_FILE = ROOT_DIR / "data" / "elisa-desktop.log"
 
 DEFAULT_HOST = "127.0.0.1"
@@ -358,6 +359,16 @@ def render_launcher_html(url: str) -> str:
     return template.replace("__ELISA_URL__", html.escape(url, quote=True))
 
 
+def resolve_launcher_icon() -> str | None:
+    """Caminho do ícone do launcher, quando o arquivo existe.
+
+    O pywebview usa esse arquivo no ícone da janela (`webview.start(icon=...)`).
+    """
+    if LAUNCHER_ICON.is_file():
+        return str(LAUNCHER_ICON)
+    return None
+
+
 def run_desktop(port: int = DEFAULT_PORT, debug: bool = False) -> None:
     try:
         import webview
@@ -380,6 +391,7 @@ def run_desktop(port: int = DEFAULT_PORT, debug: bool = False) -> None:
         background_color="#0B0B0D",
         text_select=True,
     )
+
     def on_loaded() -> None:
         api.start()
 
@@ -387,8 +399,13 @@ def run_desktop(port: int = DEFAULT_PORT, debug: bool = False) -> None:
     window.events.loaded += on_loaded
     window.events.closed += api.on_window_closed
 
+    start_options: dict[str, Any] = {}
+    icon = resolve_launcher_icon()
+    if icon:
+        start_options["icon"] = icon
+
     log.info("Abrindo launcher desktop para %s", api.status()["url"])
-    webview.start(debug=debug)
+    webview.start(debug=debug, **start_options)
 
 
 def show_error_dialog(message: str) -> None:
