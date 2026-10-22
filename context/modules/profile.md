@@ -134,6 +134,7 @@ Origens atuais:
 - `app/api/profile.py`
 - `app/api/serializers.py`
 - `app/services/activity_service.py` — sincronização após mutações e estorno antes de excluir
+- `app/services/activity_stats.py` — estatísticas usadas na sincronização de hábitos mensuráveis
 - `app/repositories/activity_repository.py` — `flush`
 - `backend/migrations/versions/1cd28703a86b_add_xp_events_ledger.py`
 

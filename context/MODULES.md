@@ -28,7 +28,10 @@ Cada módulo tem limites explícitos, UI própria, serviço de frontend e, quand
 
 **Backend:**
 - rotas em `backend/app/api/activities.py`
-- regras em `backend/app/services/activity_service.py` e `backend/app/services/measurement_service.py`
+- orquestração em `backend/app/services/activity_service.py`
+- validação em `backend/app/services/activity_validation.py`
+- estatísticas e períodos em `backend/app/services/activity_stats.py`
+- unidades em `backend/app/services/measurement_service.py`
 - dados em `backend/app/repositories/activity_repository.py`
 - modelos em `backend/app/models/activity.py`
 

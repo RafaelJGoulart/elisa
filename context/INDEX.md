@@ -45,6 +45,7 @@ Ponto de entrada da memória documental do projeto. Leia apenas o que for releva
 - [ADR-012 — Catálogo local de mídia com eventos de consumo](decisions/ADR-012-media-tracker.md)
 - [ADR-013 — EXP centralizado em extrato de eventos](decisions/ADR-013-exp-ledger.md)
 - [ADR-014 — Agentes especializados e delegação](decisions/ADR-014-agentes-especializados-e-delegacao.md)
+- [ADR-015 — Separação entre validação, estatísticas e orquestração de Atividades](decisions/ADR-015-separacao-servicos-atividades.md)
 
 ## Agentes de programação
 

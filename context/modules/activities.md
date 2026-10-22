@@ -13,6 +13,15 @@ Dois tipos coexistem:
 - **Binário:** conclusão por dia, com no máximo um registro diário.
 - **Mensurável:** quantidade por registro, vários registros por dia, unidade de medida, meta opcional e frequência diária, semanal ou mensal.
 
+## Organização do backend
+
+- `activity_service.py` orquestra CRUD, registros, transações e sincronização de EXP.
+- `activity_validation.py` valida payloads e aplica regras que dependem de unidades ou registros existentes.
+- `activity_stats.py` calcula sequências, totais, períodos e progresso sem acessar repositories.
+- `measurement_service.py` centraliza unidades e conversões.
+
+A divisão mantém `activity_service.py` como fachada do módulo, mas impede que cálculo puro e validação fiquem acoplados à orquestração.
+
 ## Modelo de dados
 
 ### `measurement_units`
@@ -339,6 +348,8 @@ Resposta `201` com `{ "activity": { ... } }`. Para hábito binário, envie `kind
 - `app/api/activities.py`
 - `app/api/serializers.py`
 - `app/services/activity_service.py`
+- `app/services/activity_validation.py`
+- `app/services/activity_stats.py`
 - `app/services/measurement_service.py`
 - `app/services/xp_service.py` (sincronização chamada pelas mutações)
 - `app/repositories/xp_repository.py`

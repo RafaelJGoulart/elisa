@@ -18,6 +18,7 @@
 | [ADR-012](decisions/ADR-012-media-tracker.md) | Catálogo local de mídia com eventos de consumo | Aceita | 2026-10-22 |
 | [ADR-013](decisions/ADR-013-exp-ledger.md) | EXP centralizado em extrato de eventos | Aceita | 2026-10-22 |
 | [ADR-014](decisions/ADR-014-agentes-especializados-e-delegacao.md) | Agentes especializados e delegação | Aceita | 2026-10-22 |
+| [ADR-015](decisions/ADR-015-separacao-servicos-atividades.md) | Separação entre validação, estatísticas e orquestração de Atividades | Aceita | 2026-10-22 |
 
 ## Formato de um ADR
 

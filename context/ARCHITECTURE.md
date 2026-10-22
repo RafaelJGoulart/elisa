@@ -66,6 +66,16 @@ Não há microserviços, filas, cache externo ou banco remoto. O Diário usa Mar
 - **Models (`app/models`)**: tabelas, relações e restrições.
 - **Core (`app/core`)**: configuração, extensões, erros, serving do frontend.
 
+### Serviços de Atividades
+
+O módulo separa três responsabilidades sem mudar os contratos da API:
+
+- `activity_service.py` — orquestra CRUD, registros, transações, leituras e sincronização de EXP.
+- `activity_validation.py` — valida payloads e converte campos da API para o modelo; consulta unidades e registros existentes quando a regra depende do estado atual.
+- `activity_stats.py` — calcula sequências, totais, períodos e progresso, sem acessar repositories.
+
+A separação evita que cálculo puro dependa de persistência. A validação pode consultar o repository para regras como compatibilidade de unidade, mas não inicia transações. Apenas o serviço orquestrador executa mutações e commits.
+
 ### App factory
 
 `backend/app/__init__.py` cria a aplicação, carrega configuração, inicializa SQLAlchemy/Flask-Migrate, registra blueprints, handlers de erro e o serving opcional do build do frontend. Testes podem sobrescrever configuração (banco temporário, `SERVE_FRONTEND=false`).
