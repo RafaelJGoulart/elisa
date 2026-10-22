@@ -27,7 +27,7 @@ class Config:
     SERVE_FRONTEND = _env_flag("SERVE_FRONTEND", True)
     FRONTEND_DIST = BASE_DIR / "frontend" / "dist"
     DIARY_DIR = DIARY_DIR
-    APP_VERSION = "0.1.0"
+    APP_VERSION = "0.2.0"
     MAX_HISTORY_DAYS = 800
     RECENT_LOGS_DAYS = 84
 
