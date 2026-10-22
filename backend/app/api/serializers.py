@@ -16,7 +16,7 @@ from app.models import (
     XpEvent,
 )
 from app.repositories.diary_file_store import DiaryDocument
-from app.services.activity_service import ActivityStats, MeasurableStats
+from app.services.activity_stats import ActivityStats, MeasurableStats
 from app.services.xp_service import CATEGORY_LABELS
 
 

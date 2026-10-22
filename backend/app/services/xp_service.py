@@ -8,6 +8,7 @@ from typing import Iterable
 from app.models import Activity, ActivityProgressEntry, XpEvent
 from app.repositories import activity_repository
 from app.repositories import xp_repository
+from app.services.activity_stats import compute_measurable_stats, period_bounds
 
 CATEGORY_HABITS = "habits"
 CATEGORY_LABELS = {CATEGORY_HABITS: "Hábitos"}
@@ -114,12 +115,10 @@ def _habit_completion(
     log_dates: Iterable[date],
     entries: Iterable[ActivityProgressEntry],
 ) -> tuple[set[date], set[date]]:
-    from app.services import activity_service
-
     if activity.kind != "measurable":
         return set(log_dates), set()
 
-    stats = activity_service.compute_measurable_stats(activity, entries)
+    stats = compute_measurable_stats(activity, entries)
     target = (
         Decimal(str(activity.target_amount))
         if activity.target_amount is not None
@@ -133,7 +132,7 @@ def _habit_completion(
 
     period_totals: dict[date, Decimal] = {}
     for item in stats.daily:
-        start = activity_service.period_bounds(item["date"], activity.frequency)[0]
+        start = period_bounds(item["date"], activity.frequency)[0]
         period_totals[start] = period_totals.get(start, Decimal("0")) + item["amount"]
     met_periods = {
         start for start, amount in period_totals.items() if _goal_met(amount, target)
