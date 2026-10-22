@@ -63,9 +63,9 @@ def test_mark_json_descreve_o_triangulo_do_feather(mark: dict) -> None:
     assert mark["viewBox"] == "0 0 24 24"
     assert mark["triangle"] == FEATHER_TRIANGLE
     assert mark["strokeWidth"] > 0
-    assert mark["icon"] == {"size": 32, "padding": 4, "radius": 8}
+    assert mark["icon"] == {"size": 32, "padding": 4}
     assert mark["colors"]["primary"] == "#8B5CF6"
-    assert mark["colors"]["background"] == "#0B0B0D"
+    assert "background" not in mark["colors"]
 
 
 def test_marca_nao_tem_elementos_alem_do_triangulo(mark: dict) -> None:
@@ -78,12 +78,33 @@ def test_svg_gerados_contem_o_triangulo(mark: dict) -> None:
         assert FEATHER_TRIANGLE in content, f"{path.name} não usa a geometria da marca"
         assert mark["colors"]["primary"] in content
         assert "<circle" not in content, f"{path.name} deve conter apenas o triângulo"
+        assert "<rect" not in content, f"{path.name} deve ter fundo transparente"
 
 
 def test_png_gerados_tem_as_dimensoes_esperadas() -> None:
     for path, size in EXPECTED_PNG_SIZES.items():
         assert path.is_file(), f"{path.name} não foi gerado"
         assert read_png_size(path) == (size, size)
+
+
+def test_png_gerados_tem_fundo_transparente() -> None:
+    pytest.importorskip("PIL", reason="Pillow é necessário para inspecionar os PNG.")
+
+    from PIL import Image
+
+    for path in (PUBLIC_DIR / "favicon-32x32.png", BRAND_DIR / "elisa-icon-256.png"):
+        with Image.open(path) as image:
+            assert image.mode == "RGBA", f"{path.name} precisa ter canal alfa"
+            width, height = image.size
+            corners = [
+                image.getpixel((0, 0)),
+                image.getpixel((width - 1, 0)),
+                image.getpixel((0, height - 1)),
+                image.getpixel((width - 1, height - 1)),
+            ]
+        assert all(pixel[3] == 0 for pixel in corners), (
+            f"{path.name} deveria ter fundo transparente"
+        )
 
 
 def test_ico_contem_as_resolucoes_esperadas() -> None:

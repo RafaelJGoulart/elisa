@@ -7,7 +7,7 @@ consome em ``frontend/src/components/shared/ElisaMark.tsx``. O traço do triâng
 Saídas:
 
 - ``assets/brand/elisa-mark.svg``       marca isolada;
-- ``assets/brand/elisa-icon.svg``       ícone do aplicativo (quadrado escuro);
+- ``assets/brand/elisa-icon.svg``       ícone do aplicativo (fundo transparente);
 - ``assets/brand/elisa-icon-*.png``     PNG em vários tamanhos;
 - ``assets/brand/elisa.ico``            ícone do Windows em múltiplas resoluções;
 - ``frontend/public/favicon.svg``       favicon usado pela interface;
@@ -289,8 +289,6 @@ def build_icon_svg(mark: dict[str, Any], size: int = 32) -> str:
         '<svg xmlns="http://www.w3.org/2000/svg" '
         f'viewBox="0 0 {icon["size"]} {icon["size"]}" width="{size}" height="{size}" '
         'role="img" aria-label="Elisa">\n'
-        f'  <rect width="{icon["size"]}" height="{icon["size"]}" rx="{icon["radius"]}" '
-        f'fill="{colors["background"]}" />\n'
         f'  <g transform="translate({padding} {padding})" fill="none" '
         'stroke-linecap="round" stroke-linejoin="round">\n'
         f'    <path d="{mark["triangle"]}" stroke="{colors["primary"]}" '
@@ -320,7 +318,7 @@ def build_inline_mark(mark: dict[str, Any], size: int = 24) -> str:
 
 
 def render_icon(mark: dict[str, Any], size: int):
-    """Desenha o ícone do aplicativo em PNG (RGBA)."""
+    """Desenha o ícone do aplicativo em PNG (RGBA, fundo transparente)."""
     from PIL import Image, ImageDraw
 
     icon = mark["icon"]
@@ -334,13 +332,6 @@ def render_icon(mark: dict[str, Any], size: int):
 
     image = Image.new("RGBA", (canvas_size, canvas_size), (0, 0, 0, 0))
     draw = ImageDraw.Draw(image)
-
-    radius = icon["radius"] * pixels_per_unit
-    draw.rounded_rectangle(
-        [0, 0, canvas_size - 1, canvas_size - 1],
-        radius=radius,
-        fill=colors["background"],
-    )
 
     padding = icon["padding"]
     stroke_width = mark["strokeWidth"] * pixels_per_unit

@@ -27,6 +27,7 @@ LOG_FILE = ROOT_DIR / "data" / "elisa-desktop.log"
 DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 5000
 STARTUP_TIMEOUT_SECONDS = 10.0
+WINDOWS_APP_ID = "Elisa.Desktop"
 
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
@@ -369,6 +370,21 @@ def resolve_launcher_icon() -> str | None:
     return None
 
 
+def apply_windows_app_id() -> None:
+    """Dá ao processo identidade própria na barra de tarefas do Windows.
+
+    Sem o AppUserModelID, o Windows agrupa a janela sob o ícone do Python e
+    ignora o ícone definido em `webview.start(icon=...)`.
+    """
+    if sys.platform != "win32":
+        return
+
+    try:
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(WINDOWS_APP_ID)
+    except (AttributeError, OSError):
+        log.exception("Falha ao definir a identidade do aplicativo no Windows.")
+
+
 def run_desktop(port: int = DEFAULT_PORT, debug: bool = False) -> None:
     try:
         import webview
@@ -379,6 +395,8 @@ def run_desktop(port: int = DEFAULT_PORT, debug: bool = False) -> None:
             "  .\\.venv\\Scripts\\python.exe -m pip install "
             "-r backend\\requirements-desktop.txt"
         ) from exc
+
+    apply_windows_app_id()
 
     api = LauncherApi(port)
     window = webview.create_window(
