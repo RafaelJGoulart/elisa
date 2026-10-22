@@ -6,11 +6,13 @@ import { ActivityDetailPage } from '@/features/activities/pages/ActivityDetailPa
 import { DiaryPage } from '@/features/diary/pages/DiaryPage'
 import { HomePage } from '@/features/home/HomePage'
 import { NotFoundPage } from '@/app/NotFoundPage'
+import { RouteErrorPage } from '@/app/RouteErrorPage'
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <AppShell />,
+    errorElement: <RouteErrorPage />,
     children: [
       { index: true, element: <HomePage /> },
       { path: 'atividades', element: <ActivitiesPage /> },

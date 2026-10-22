@@ -162,8 +162,9 @@ Sem parâmetros, usa os últimos 365 dias. `start` deve ser anterior a `end`.
   - concluído (cor da atividade);
   - sem registro;
   - futuro (hachurado; não é falha);
-  - hoje;
+  - hoje (borda `text-secondary`, nomeado no rótulo acessível);
   - selecionado.
+- Células de 24 px (alvo de toque conforme a WCAG 2.5.8) com semântica `role="grid"`; apenas uma célula é alcançável pelo Tab e as setas, `Home` e `End` movem o foco dentro da grade.
 - Painel do dia selecionado com data por extenso, estado, horário do registro e ação.
 - Edição e exclusão com confirmação.
 

@@ -66,6 +66,17 @@ describe('DiaryComposer', () => {
     expect(diaryService.create).not.toHaveBeenCalled()
   })
 
+  it('move o foco para o primeiro campo inválido', async () => {
+    const user = userEvent.setup()
+
+    render(<DiaryComposer onSaved={vi.fn()} />)
+
+    await user.click(screen.getByRole('button', { name: 'Salvar registro' }))
+
+    expect(await screen.findByText('Escreva algo antes de salvar.')).toBeInTheDocument()
+    expect(screen.getByLabelText('O que você quer guardar?')).toHaveFocus()
+  })
+
   it('preserva o texto quando o salvamento falha', async () => {
     const user = userEvent.setup()
     vi.mocked(diaryService.create).mockRejectedValue(

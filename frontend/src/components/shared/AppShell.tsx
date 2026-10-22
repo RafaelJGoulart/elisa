@@ -168,7 +168,7 @@ export function AppShell() {
         </div>
 
         <div className="flex-1 overflow-y-auto px-3 py-4">
-          <p className="mb-2 px-3 text-[10px] font-medium tracking-[0.16em] text-text-disabled uppercase">
+          <p className="mb-2 px-3 text-[10px] font-medium tracking-[0.16em] text-text-secondary uppercase">
             Espaço
           </p>
           <DesktopNav />
@@ -176,11 +176,11 @@ export function AppShell() {
 
         <div className="space-y-3 border-t border-border px-5 py-4">
           <HealthIndicator />
-          <p className="text-[11px] text-text-disabled">v0.1.0 · dados na sua máquina</p>
+          <p className="text-[11px] text-text-secondary">v0.1.0 · dados na sua máquina</p>
         </div>
       </aside>
 
-      <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-background/90 px-4 backdrop-blur-sm lg:hidden">
+      <header className="sticky top-0 z-30 flex h-[calc(3.5rem+env(safe-area-inset-top))] items-center justify-between border-b border-border bg-background/90 px-4 pt-[env(safe-area-inset-top)] backdrop-blur-sm lg:hidden">
         <NavLink to="/" className="flex items-center gap-2.5">
           <ElisaMark />
           <span className="text-sm font-semibold tracking-tight text-foreground">Elisa</span>
@@ -229,7 +229,7 @@ export function AppShell() {
       </header>
 
       <main id="conteudo" className="lg:pl-60">
-        <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
+        <div className="mx-auto w-full max-w-6xl px-4 pt-8 pb-[calc(2rem+env(safe-area-inset-bottom))] sm:px-6 lg:px-10 lg:pt-12 lg:pb-[calc(3rem+env(safe-area-inset-bottom))]">
           <Outlet />
         </div>
       </main>

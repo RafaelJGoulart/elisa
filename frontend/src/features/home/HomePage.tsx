@@ -42,7 +42,7 @@ function ModuleCard({ icon, title, description, status, meta, to }: ModuleCardPr
       </div>
       <h3 className="mt-4 text-sm font-semibold text-foreground">{title}</h3>
       <p className="mt-1.5 text-xs leading-relaxed text-text-secondary">{description}</p>
-      <p className="mt-4 text-[11px] text-text-disabled">{meta}</p>
+      <p className="mt-4 text-[11px] tabular-nums text-text-secondary">{meta}</p>
     </>
   )
 
@@ -59,6 +59,7 @@ function ModuleCard({ icon, title, description, status, meta, to }: ModuleCardPr
 
   return (
     <div
+      role="group"
       className="flex flex-col rounded-xl border border-dashed border-border bg-surface/40 p-5"
       aria-label={`${title}: módulo planejado, ainda não implementado`}
     >

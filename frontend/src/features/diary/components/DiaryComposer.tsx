@@ -1,4 +1,4 @@
-import { useState, type FormEvent, type RefObject } from 'react'
+import { useCallback, useRef, useState, type FormEvent, type RefObject } from 'react'
 
 import { Icon } from '@/components/shared/Icon'
 import { Badge } from '@/components/ui/badge'
@@ -9,6 +9,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { getErrorMessage } from '@/lib/errors'
 import { parseTagsInput } from '@/lib/diary'
 import { validateDiaryFields, type DiaryFieldErrors } from '@/lib/diaryValidation'
+import { focusFirstErroredField } from '@/lib/focus'
+import { useUnsavedChangesWarning } from '@/hooks/useUnsavedChangesWarning'
 import { diaryService } from '@/services/diary'
 import type { DiaryEntry } from '@/features/diary/types'
 
@@ -25,7 +27,25 @@ export function DiaryComposer({ onSaved, contentRef }: DiaryComposerProps) {
   const [formError, setFormError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
 
+  const titleRef = useRef<HTMLInputElement>(null)
+  const contentFieldRef = useRef<HTMLTextAreaElement>(null)
+  const tagsRef = useRef<HTMLInputElement>(null)
+
+  const fieldRefs = { title: titleRef, content: contentFieldRef, tags: tagsRef }
+  const fieldOrder = ['title', 'content', 'tags'] as const
+
+  const setContentField = useCallback(
+    (node: HTMLTextAreaElement | null) => {
+      contentFieldRef.current = node
+      if (contentRef) contentRef.current = node
+    },
+    [contentRef],
+  )
+
   const tags = parseTagsInput(tagsInput)
+  const hasDraft = title.trim().length > 0 || content.length > 0 || tagsInput.trim().length > 0
+
+  useUnsavedChangesWarning(hasDraft)
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -35,6 +55,7 @@ export function DiaryComposer({ onSaved, contentRef }: DiaryComposerProps) {
     const parsed = validateDiaryFields({ title, content, tags })
     if (!parsed.success) {
       setErrors(parsed.errors)
+      focusFirstErroredField(parsed.errors, fieldRefs, fieldOrder)
       return
     }
 
@@ -88,6 +109,9 @@ export function DiaryComposer({ onSaved, contentRef }: DiaryComposerProps) {
           </Label>
           <Input
             id="diary-title"
+            ref={titleRef}
+            name="diary-title"
+            autoComplete="off"
             value={title}
             onChange={(event) => setTitle(event.target.value)}
             placeholder="Um nome para este registro"
@@ -108,13 +132,15 @@ export function DiaryComposer({ onSaved, contentRef }: DiaryComposerProps) {
             <Label htmlFor="diary-content" className="text-text-secondary">
               O que você quer guardar?
             </Label>
-            <span className="font-mono text-[10px] text-text-disabled">
+            <span id="diary-content-counter" className="font-mono text-[10px] text-text-secondary">
               {content.length.toLocaleString('pt-BR')}/100.000
             </span>
           </div>
           <Textarea
             id="diary-content"
-            ref={contentRef}
+            ref={setContentField}
+            name="diary-content"
+            autoComplete="off"
             value={content}
             onChange={(event) => setContent(event.target.value)}
             placeholder="Escreva livremente sobre o dia, um pensamento, uma descoberta…"
@@ -122,7 +148,11 @@ export function DiaryComposer({ onSaved, contentRef }: DiaryComposerProps) {
             disabled={saving}
             className="min-h-40 resize-y text-sm leading-relaxed"
             aria-invalid={Boolean(errors.content)}
-            aria-describedby={errors.content ? 'diary-content-error' : undefined}
+            aria-describedby={
+              errors.content
+                ? 'diary-content-error diary-content-counter'
+                : 'diary-content-counter'
+            }
           />
           {errors.content ? (
             <p id="diary-content-error" role="alert" className="text-xs text-red">
@@ -137,6 +167,9 @@ export function DiaryComposer({ onSaved, contentRef }: DiaryComposerProps) {
           </Label>
           <Input
             id="diary-tags"
+            ref={tagsRef}
+            name="diary-tags"
+            autoComplete="off"
             value={tagsInput}
             onChange={(event) => setTagsInput(event.target.value)}
             placeholder="pessoal, ideias, gratidão"
@@ -149,7 +182,7 @@ export function DiaryComposer({ onSaved, contentRef }: DiaryComposerProps) {
               {errors.tags}
             </p>
           ) : (
-            <p id="diary-tags-hint" className="text-[11px] text-text-disabled">
+            <p id="diary-tags-hint" className="text-[11px] text-text-secondary">
               Separe as etiquetas por vírgulas.
             </p>
           )}
@@ -175,7 +208,7 @@ export function DiaryComposer({ onSaved, contentRef }: DiaryComposerProps) {
         ) : null}
 
         <div className="flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-[11px] leading-relaxed text-text-disabled">
+          <p className="text-[11px] leading-relaxed text-text-secondary">
             Salvo como Markdown em <span className="font-mono">data/diary</span>, neste
             computador.
           </p>

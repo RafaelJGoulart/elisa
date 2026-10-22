@@ -78,7 +78,8 @@
 
   --text-primary: #f2f2f4;
   --text-secondary: #a0a0aa;
-  --text-disabled: #666670;
+  /* 5.39:1 sobre --surface e 5.77:1 sobre --background (WCAG AA). */
+  --text-disabled: #8a8a96;
 }
 
 @layer base {
@@ -88,6 +89,9 @@
 
   html {
     color-scheme: dark;
+    /* Mantém o zoom por pinça, mas desliga o duplo toque que causes zoom
+       acidental em telas de toque. */
+    touch-action: manipulation;
   }
 
   body {
@@ -100,6 +104,16 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  .font-mono {
+    font-variant-numeric: tabular-nums;
   }
 
   ::selection {

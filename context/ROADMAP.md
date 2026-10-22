@@ -52,6 +52,16 @@ Legenda: **Concluído** = implementado, testado e documentado. **Em andamento** 
 - [x] Documentação de que o backup do Diário exige cópia de `data/diary/`.
 - [x] Launcher desktop com pywebview, janela de controle, abertura no navegador e encerramento do servidor ao fechar.
 
+### Acessibilidade
+
+- [x] Auditoria de contraste sobre estilos computados: zero violações AA nas telas de Início, Atividades, Detalhe e Diário.
+- [x] Foco visível em todos os controles, com anel roxo opaco (contorno no menu e no seletor de cor).
+- [x] Grade de contribuições com `role="grid"`, roving tabindex, navegação por setas e `Home`/`End`.
+- [x] Células de 24 px na grade, com alvo de toque conforme a WCAG 2.5.8.
+- [x] Dia de hoje nomeado no rótulo acessível, no `title` e na legenda da grade.
+- [x] Foco no primeiro campo com erro, `name`/`autoComplete` nos campos e contadores descritos por `aria-describedby`.
+- [x] Aviso de conteúdo não salvo ao sair da página (`beforeunload`), `RouteErrorPage` e cabeçalhos com `text-wrap: balance`.
+
 ## Em andamento
 
 Nenhuma frente ativa no momento.
@@ -64,7 +74,7 @@ Nenhuma frente ativa no momento.
 - [ ] Filtro e agrupamento por categoria.
 - [ ] Arquivamento de atividades sem apagar o histórico.
 - [ ] Revisão semanal/mensal com resumo de consistência.
-- [ ] Navegação por teclado dentro da grade (setas) e atalhos.
+- [ ] Atalhos adicionais de teclado dentro da grade (além de setas, `Home` e `End`).
 - [ ] Metas opcionais por atividade.
 - [ ] Conquistas e marcos — apenas com dado real, sem gamificação artificial.
 

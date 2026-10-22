@@ -54,6 +54,20 @@ export function isFutureDateKey(key: string, today = todayKey()): boolean {
   return key > today
 }
 
+/** Move uma data local em N dias, preservando o formato `YYYY-MM-DD`. */
+export function shiftDateKey(key: string, days: number): string {
+  return toDateKey(addDays(fromDateKey(key), days))
+}
+
+/** Primeiro e último dia da semana (domingo e sábado) de uma data local. */
+export function weekBoundsKeys(key: string): { first: string; last: string } {
+  const date = fromDateKey(key)
+  return {
+    first: toDateKey(startOfWeek(date, { weekStartsOn: 0 })),
+    last: toDateKey(endOfWeek(date, { weekStartsOn: 0 })),
+  }
+}
+
 export interface ContributionDay {
   date: string
   isFuture: boolean

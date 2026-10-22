@@ -162,7 +162,7 @@ export function DiaryEntryList({
                     </span>
                     <time
                       dateTime={entry.createdAt}
-                      className="shrink-0 font-mono text-[11px] text-text-disabled"
+                      className="shrink-0 font-mono text-[11px] text-text-secondary"
                     >
                       {formatEntryTime(entry.createdAt)}
                     </time>
@@ -182,7 +182,7 @@ export function DiaryEntryList({
                         </Badge>
                       ))}
                       {hiddenTags > 0 ? (
-                        <span className="text-[10px] text-text-disabled">
+                        <span className="text-[10px] text-text-secondary">
                           +{hiddenTags}
                         </span>
                       ) : null}

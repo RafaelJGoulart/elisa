@@ -55,9 +55,10 @@ export function DiaryPage() {
   }
 
   function focusComposer() {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     document
       .getElementById('diary-composer')
-      ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      ?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' })
     window.setTimeout(() => contentRef.current?.focus(), 250)
   }
 
@@ -135,6 +136,8 @@ export function DiaryPage() {
               />
               <Input
                 type="search"
+                name="diary-search"
+                autoComplete="off"
                 value={queryInput}
                 onChange={(event) => setQueryInput(event.target.value)}
                 placeholder="Buscar por título, conteúdo ou etiqueta"
@@ -160,6 +163,8 @@ export function DiaryPage() {
               <Input
                 id="diary-month"
                 type="month"
+                name="diary-month"
+                autoComplete="off"
                 value={month ?? ''}
                 onChange={(event) => updateMonth(event.target.value || null)}
                 className="w-44 text-xs"

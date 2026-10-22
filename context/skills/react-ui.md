@@ -22,7 +22,11 @@
 - [ ] Confirmação antes de ação destrutiva.
 - [ ] Foco visível e navegação por teclado.
 - [ ] Rótulos em campos e `aria-label` em botões de ícone.
-- [ ] Contraste adequado (texto escuro sobre primário/destrutivo).
+- [ ] `name` e `autoComplete` em todos os campos de formulário.
+- [ ] Falha de validação leva o foco ao primeiro campo com erro.
+- [ ] Alvos de toque de no mínimo 24×24 px.
+- [ ] Contraste adequado (texto escuro sobre primário/destrutivo) e nenhum texto abaixo de 4,5:1.
+- [ ] Estado nunca comunicado apenas por cor.
 - [ ] Responsivo em 360 px, tablet e desktop; rolagem horizontal onde necessário.
 - [ ] `prefers-reduced-motion` respeitado.
 - [ ] Sem ícones de outra biblioteca; use `Icon`.

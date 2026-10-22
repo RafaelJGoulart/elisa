@@ -46,7 +46,7 @@ export function DiaryEntryDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[calc(100svh-2rem)] overflow-y-auto sm:max-w-2xl">
+      <DialogContent className="max-h-[calc(100svh-2rem)] overflow-y-auto overscroll-contain sm:max-w-2xl">
         {loading && !data ? (
           <div className="space-y-4">
             <DialogHeader>
@@ -106,7 +106,7 @@ export function DiaryEntryDialog({
               </div>
             ) : null}
 
-            <div className="max-h-[58svh] overflow-y-auto rounded-lg border border-border bg-background px-4 py-4 sm:px-5">
+            <div className="max-h-[58svh] overflow-y-auto overscroll-contain rounded-lg border border-border bg-background px-4 py-4 sm:px-5">
               <div className="text-sm leading-7 whitespace-pre-wrap break-words text-foreground">
                 {data.content}
               </div>
@@ -130,7 +130,7 @@ export function DiaryEntryDialog({
               </div>
               <div className="flex items-center gap-3">
                 {isEdited(data.createdAt, data.updatedAt) ? (
-                  <span className="text-[10px] text-text-disabled">
+                  <span className="text-[10px] text-text-secondary">
                     Atualizado às {formatEntryTime(data.updatedAt)}
                   </span>
                 ) : null}

@@ -57,5 +57,61 @@ describe('ContributionCalendar', () => {
     expect(screen.getByText('Concluído')).toBeInTheDocument()
     expect(screen.getByText('Sem registro')).toBeInTheDocument()
     expect(screen.getByText('Futuro')).toBeInTheDocument()
+    expect(screen.getByText('Hoje')).toBeInTheDocument()
+  })
+
+  it('informa o dia de hoje no rótulo acessível da célula', () => {
+    renderCalendar()
+
+    expect(
+      screen.getByRole('button', {
+        name: /quarta-feira, 21 de outubro de 2026 — sem registro — hoje/i,
+      }),
+    ).toBeInTheDocument()
+  })
+
+  it('mantém apenas uma célula na ordem de tabulação', () => {
+    renderCalendar()
+
+    const tabbable = screen
+      .getAllByRole('button')
+      .filter((cell) => cell.getAttribute('tabindex') === '0')
+
+    expect(tabbable).toHaveLength(1)
+    expect(tabbable[0]).toHaveAccessibleName(/21 de outubro de 2026/)
+  })
+
+  it('move o foco entre as células com as setas do teclado', async () => {
+    const user = userEvent.setup()
+    renderCalendar()
+
+    screen.getByRole('button', { name: /21 de outubro de 2026/i }).focus()
+
+    await user.keyboard('{ArrowRight}')
+    expect(
+      screen.getByRole('button', { name: /quinta-feira, 22 de outubro de 2026/i }),
+    ).toHaveFocus()
+
+    await user.keyboard('{ArrowLeft}')
+    expect(
+      screen.getByRole('button', { name: /quarta-feira, 21 de outubro de 2026/i }),
+    ).toHaveFocus()
+
+    await user.keyboard('{ArrowUp}')
+    expect(
+      screen.getByRole('button', { name: /quarta-feira, 14 de outubro de 2026/i }),
+    ).toHaveFocus()
+  })
+
+  it('não move o foco para fora do período exibido', async () => {
+    const user = userEvent.setup()
+    renderCalendar()
+
+    screen.getByRole('button', { name: /21 de outubro de 2026/i }).focus()
+    await user.keyboard('{ArrowDown}')
+
+    expect(
+      screen.getByRole('button', { name: /quarta-feira, 21 de outubro de 2026/i }),
+    ).toHaveFocus()
   })
 })

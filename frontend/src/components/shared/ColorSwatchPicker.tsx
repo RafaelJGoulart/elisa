@@ -26,7 +26,7 @@ export function ColorSwatchPicker({
             <label
               key={color.key}
               className={cn(
-                'relative flex size-8 cursor-pointer items-center justify-center rounded-full border transition-all',
+                'relative flex size-8 cursor-pointer items-center justify-center rounded-full border transition-colors focus-within:outline-2 focus-within:outline-offset-1 focus-within:outline-ring',
                 checked
                   ? 'border-foreground/70 ring-2 ring-foreground/20'
                   : 'border-transparent hover:border-border',
@@ -40,7 +40,7 @@ export function ColorSwatchPicker({
                 checked={checked}
                 disabled={disabled}
                 onChange={() => onChange(color.key)}
-                className="sr-only"
+                className="sr-only focus-visible:outline-none"
                 aria-label={color.label}
               />
               <span

@@ -81,25 +81,29 @@ export function ActivityCard({ activity, onEdit, onDelete }: ActivityCardProps) 
           {activity.description}
         </p>
       ) : (
-        <p className="mt-3 text-sm text-text-disabled italic">Sem descrição.</p>
+        <p className="mt-3 text-sm text-text-secondary italic">Sem descrição.</p>
       )}
 
       <div className="mt-auto flex flex-wrap items-end justify-between gap-4 pt-5">
         <dl className="flex items-center gap-5">
           <div>
-            <dt className="text-[10px] tracking-[0.08em] text-text-disabled uppercase">Total</dt>
+            <dt className="text-[10px] tracking-[0.08em] text-text-secondary uppercase">Total</dt>
             <dd className="mt-0.5 font-mono text-sm text-foreground">
               {activity.stats.totalCompleted}{' '}
-              <span className="text-xs text-text-secondary">dias</span>
+              <span className="text-xs text-text-secondary">
+                {activity.stats.totalCompleted === 1 ? 'dia' : 'dias'}
+              </span>
             </dd>
           </div>
           <div>
-            <dt className="text-[10px] tracking-[0.08em] text-text-disabled uppercase">
+            <dt className="text-[10px] tracking-[0.08em] text-text-secondary uppercase">
               Sequência
             </dt>
             <dd className="mt-0.5 font-mono text-sm text-foreground">
               {activity.stats.currentStreak}{' '}
-              <span className="text-xs text-text-secondary">dias</span>
+              <span className="text-xs text-text-secondary">
+                {activity.stats.currentStreak === 1 ? 'dia' : 'dias'}
+              </span>
             </dd>
           </div>
           {activity.stats.currentStreak > 0 ? (
@@ -110,7 +114,16 @@ export function ActivityCard({ activity, onEdit, onDelete }: ActivityCardProps) 
           ) : null}
         </dl>
 
-        <MiniContributionGrid dates={activity.recentLogs} colorHex={color.hex} />
+        <div className="flex items-center gap-2">
+          <MiniContributionGrid dates={activity.recentLogs} colorHex={color.hex} />
+          <span className="sr-only">
+            {activity.recentLogs.length}{' '}
+            {activity.recentLogs.length === 1
+              ? 'dia concluído'
+              : 'dias concluídos'}{' '}
+            nas últimas semanas.
+          </span>
+        </div>
       </div>
     </article>
   )

@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useRef, useState, type FormEvent } from 'react'
 
 import { Icon } from '@/components/shared/Icon'
 import {
@@ -27,6 +27,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { formatEntryDateTime, parseTagsInput } from '@/lib/diary'
 import { validateDiaryFields, type DiaryFieldErrors } from '@/lib/diaryValidation'
 import { getErrorMessage } from '@/lib/errors'
+import { focusFirstErroredField } from '@/lib/focus'
+import { useUnsavedChangesWarning } from '@/hooks/useUnsavedChangesWarning'
 import { diaryService } from '@/services/diary'
 import type { DiaryEntry } from '@/features/diary/types'
 
@@ -59,11 +61,20 @@ export function DiaryEditorDialog({
   const [saving, setSaving] = useState(false)
   const [discardOpen, setDiscardOpen] = useState(false)
 
+  const titleRef = useRef<HTMLInputElement>(null)
+  const contentRef = useRef<HTMLTextAreaElement>(null)
+  const tagsRef = useRef<HTMLInputElement>(null)
+
+  const fieldRefs = { title: titleRef, content: contentRef, tags: tagsRef }
+  const fieldOrder = ['title', 'content', 'tags'] as const
+
   const tags = parseTagsInput(tagsInput)
   const dirty =
     title.trim() !== entry.title ||
     content !== entry.content ||
     !sameTags(tags, entry.tags)
+
+  useUnsavedChangesWarning(dirty)
 
   function requestClose() {
     if (saving) return
@@ -82,6 +93,7 @@ export function DiaryEditorDialog({
     const parsed = validateDiaryFields({ title, content, tags })
     if (!parsed.success) {
       setErrors(parsed.errors)
+      focusFirstErroredField(parsed.errors, fieldRefs, fieldOrder)
       return
     }
 
@@ -110,7 +122,7 @@ export function DiaryEditorDialog({
           else requestClose()
         }}
       >
-        <DialogContent className="max-h-[calc(100svh-2rem)] overflow-y-auto sm:max-w-2xl">
+        <DialogContent className="max-h-[calc(100svh-2rem)] overflow-y-auto overscroll-contain sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle>Editar registro</DialogTitle>
             <DialogDescription>
@@ -126,6 +138,9 @@ export function DiaryEditorDialog({
               </Label>
               <Input
                 id="diary-edit-title"
+                ref={titleRef}
+                name="diary-edit-title"
+                autoComplete="off"
                 value={title}
                 onChange={(event) => setTitle(event.target.value)}
                 maxLength={160}
@@ -145,12 +160,18 @@ export function DiaryEditorDialog({
                 <Label htmlFor="diary-edit-content" className="text-text-secondary">
                   Conteúdo
                 </Label>
-                <span className="font-mono text-[10px] text-text-disabled">
+                <span
+                  id="diary-edit-content-counter"
+                  className="font-mono text-[10px] text-text-secondary"
+                >
                   {content.length.toLocaleString('pt-BR')}/100.000
                 </span>
               </div>
               <Textarea
                 id="diary-edit-content"
+                ref={contentRef}
+                name="diary-edit-content"
+                autoComplete="off"
                 value={content}
                 onChange={(event) => setContent(event.target.value)}
                 rows={12}
@@ -158,7 +179,9 @@ export function DiaryEditorDialog({
                 className="min-h-64 resize-y text-sm leading-relaxed"
                 aria-invalid={Boolean(errors.content)}
                 aria-describedby={
-                  errors.content ? 'diary-edit-content-error' : undefined
+                  errors.content
+                    ? 'diary-edit-content-error diary-edit-content-counter'
+                    : 'diary-edit-content-counter'
                 }
               />
               {errors.content ? (
@@ -174,6 +197,9 @@ export function DiaryEditorDialog({
               </Label>
               <Input
                 id="diary-edit-tags"
+                ref={tagsRef}
+                name="diary-edit-tags"
+                autoComplete="off"
                 value={tagsInput}
                 onChange={(event) => setTagsInput(event.target.value)}
                 disabled={saving}

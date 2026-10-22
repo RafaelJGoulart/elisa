@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useRef, useState, type FormEvent } from 'react'
 import { z } from 'zod'
 
 import { ColorSwatchPicker } from '@/components/shared/ColorSwatchPicker'
@@ -18,6 +18,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { ApiError } from '@/lib/api'
 import { CATEGORY_SUGGESTIONS } from '@/lib/categories'
 import type { ActivityColor } from '@/lib/colors'
+import { focusFirstErroredField } from '@/lib/focus'
 import type { Activity, ActivityInput } from '@/features/activities/types'
 import { getErrorMessage, activitiesService } from '@/services/activities'
 
@@ -80,6 +81,13 @@ function ActivityForm({ activity, onSaved, onCancel }: ActivityFormProps) {
   const [formError, setFormError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
 
+  const nameRef = useRef<HTMLInputElement>(null)
+  const categoryRef = useRef<HTMLInputElement>(null)
+  const descriptionRef = useRef<HTMLTextAreaElement>(null)
+
+  const fieldRefs = { name: nameRef, category: categoryRef, description: descriptionRef }
+  const fieldOrder = ['name', 'category', 'description'] as const
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setFormError(null)
@@ -97,6 +105,7 @@ function ActivityForm({ activity, onSaved, onCancel }: ActivityFormProps) {
         }
       }
       setErrors(nextErrors)
+      focusFirstErroredField(nextErrors, fieldRefs, fieldOrder)
       return
     }
 
@@ -119,6 +128,7 @@ function ActivityForm({ activity, onSaved, onCancel }: ActivityFormProps) {
       const serverFields = extractServerFields(error)
       if (Object.keys(serverFields).length > 0) {
         setErrors(serverFields)
+        focusFirstErroredField(serverFields, fieldRefs, fieldOrder)
       }
       setFormError(getErrorMessage(error))
     } finally {
@@ -132,6 +142,9 @@ function ActivityForm({ activity, onSaved, onCancel }: ActivityFormProps) {
         <Label htmlFor="activity-name">Nome</Label>
         <Input
           id="activity-name"
+          ref={nameRef}
+          name="activity-name"
+          autoComplete="off"
           value={name}
           onChange={(event) => setName(event.target.value)}
           placeholder="Ex.: Leitura, Corrida, Estudo de alemão"
@@ -151,6 +164,9 @@ function ActivityForm({ activity, onSaved, onCancel }: ActivityFormProps) {
         <Label htmlFor="activity-category">Categoria</Label>
         <Input
           id="activity-category"
+          ref={categoryRef}
+          name="activity-category"
+          autoComplete="off"
           value={category}
           onChange={(event) => setCategory(event.target.value)}
           placeholder="Ex.: Saúde"
@@ -175,6 +191,9 @@ function ActivityForm({ activity, onSaved, onCancel }: ActivityFormProps) {
         <Label htmlFor="activity-description">Descrição (opcional)</Label>
         <Textarea
           id="activity-description"
+          ref={descriptionRef}
+          name="activity-description"
+          autoComplete="off"
           value={description}
           onChange={(event) => setDescription(event.target.value)}
           placeholder="Um lembrete curto sobre o que conta como concluir esta atividade."
@@ -190,7 +209,7 @@ function ActivityForm({ activity, onSaved, onCancel }: ActivityFormProps) {
           ) : (
             <span />
           )}
-          <span className="font-mono text-[10px] text-text-disabled">
+          <span className="font-mono text-[10px] text-text-secondary">
             {description.length}/500
           </span>
         </div>
@@ -244,7 +263,7 @@ export function ActivityFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[calc(100svh-2rem)] overflow-y-auto">
+      <DialogContent className="max-h-[calc(100svh-2rem)] overflow-y-auto overscroll-contain">
         <DialogHeader>
           <DialogTitle>{isEditing ? 'Editar atividade' : 'Nova atividade'}</DialogTitle>
           <DialogDescription>

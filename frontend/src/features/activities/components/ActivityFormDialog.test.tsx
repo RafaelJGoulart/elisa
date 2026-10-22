@@ -67,6 +67,18 @@ describe('ActivityFormDialog', () => {
     expect(activitiesService.create).not.toHaveBeenCalled()
   })
 
+  it('move o foco para o primeiro campo inválido', async () => {
+    const user = userEvent.setup()
+
+    render(<ActivityFormDialog open onOpenChange={vi.fn()} onSaved={vi.fn()} />)
+
+    await user.type(screen.getByLabelText('Nome'), 'Corrida')
+    await user.click(screen.getByRole('button', { name: 'Criar atividade' }))
+
+    expect(screen.getByText('Informe uma categoria.')).toBeInTheDocument()
+    expect(screen.getByLabelText('Categoria')).toHaveFocus()
+  })
+
   it('preenche o formulário ao editar uma atividade existente', () => {
     render(
       <ActivityFormDialog

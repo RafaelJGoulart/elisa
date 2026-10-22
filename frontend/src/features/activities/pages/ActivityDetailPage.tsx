@@ -112,6 +112,7 @@ export function ActivityDetailPage() {
         icon="alert-circle"
         title="Atividade não encontrada"
         description="O identificador informado não corresponde a uma atividade existente."
+        headingLevel="h1"
         action={
           <Button asChild variant="outline" size="sm">
             <Link to="/atividades">Voltar para atividades</Link>
@@ -133,7 +134,11 @@ export function ActivityDetailPage() {
           <Icon name="arrow-left" size={14} />
           Atividades
         </Link>
-        <ErrorState message={getErrorMessage(error)} onRetry={reload} />
+        <ErrorState
+          message={getErrorMessage(error)}
+          onRetry={reload}
+          headingLevel="h1"
+        />
       </div>
     )
   }
