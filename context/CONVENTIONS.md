@@ -53,6 +53,8 @@
 - Erros de campo: `ValidationError` com `details = {"fields": {...}}`.
 - Mensagens objetivas, em português, sem expor detalhes internos.
 - Limites atuais: atividade com nome 2–80, descrição até 500, categoria até 40 e cor na paleta; Diário com título até 160, conteúdo até 100.000, 10 etiquetas de até 30 caracteres e busca até 200.
+- Hábitos mensuráveis: quantidade maior que zero e até 1.000.000.000, até 4 casas decimais; observação até 500; unidades personalizadas com nome até 40 e símbolo até 12.
+- Mídia: título até 200, descrição/observações até 2.000, criador até 160, ano 1–3000, avaliação 1–5, até 10 gêneros de 40 caracteres, quantidade de consumo maior que zero, duração real mínima 0,01 e observação até 500.
 
 ### Transações e erros
 
@@ -61,12 +63,23 @@
 - Exceções inesperadas são registradas e retornam 500 genérico.
 - Nunca retorne stack trace, caminho de arquivo ou SQL ao cliente.
 
+## Unidades, metas e consumo
+
+- Unidades de hábito têm `dimension` e `factor`; converta apenas dentro da mesma dimensão e nunca some grandezas diferentes.
+- Unidades personalizadas têm dimensão própria e não são conversíveis para unidades padrão ou entre si.
+- O registro guarda a unidade original; a conversão acontece na agregação para a unidade do hábito.
+- Metas são opcionais e expressas na unidade do hábito; trocar para unidade compatível converte a meta.
+- Hábitos binários permanecem diários e não aceitam unidade, meta ou quantidade.
+- Em mídia, unidades diferentes (episódio, página, capítulo, hora etc.) são agregadas separadamente; não invente conversão.
+- Revisitas somam no consumo, mas não no progresso. Progresso manual (`progressOverride`) não apaga o consumo.
+- Tempo real, estimado e desconhecido são categorias distintas; não apresente estimativa como medição.
+
 ## Datas e fuso
 
-- Registros diários: data local sem hora, `YYYY-MM-DD`.
+- Registros diários e consumos: data local sem hora, `YYYY-MM-DD`.
 - `created_at` / `updated_at`: UTC, serializados em ISO 8601 com `Z`.
 - No frontmatter do Diário, timestamps preservam o fuso local; a API converte para UTC e a UI exibe em horário local.
-- Datas futuras não podem ser registradas em atividades.
+- Datas futuras não podem ser registradas em atividades ou consumos de mídia.
 - Não use `toISOString()` para obter a data local no frontend; use `toDateKey()` (`lib/dates.ts`).
 
 ## Arquivos Markdown do Diário
@@ -91,8 +104,8 @@
 
 ## Testes
 
-- Backend: pytest, banco temporário isolado por teste, cobrindo CRUD, validação, 404, conflito, datas, sequências e persistência.
-- Frontend: Vitest + Testing Library, priorizando regra de comportamento (calendário, formulários, listas, proteção de alterações e estados) em vez de "renderiza sem erro".
+- Backend: pytest, banco temporário isolado por teste, cobrindo CRUD, validação, 404, conflito, datas, sequências, conversões de unidade, agregações de mídia e persistência.
+- Frontend: Vitest + Testing Library, priorizando regra de comportamento (calendário, formulários, listas, diálogos de progresso/consumo, proteção de alterações e estados) em vez de "renderiza sem erro".
 - Testes devem ser determinísticos: não dependam da data real quando possível; componentes aceitam `today` para injeção.
 - Mocks de serviço apenas nas fronteiras; não simule o banco nos testes de API.
 - Persistência em arquivo deve ser testada em diretório temporário, incluindo falha de escrita, caminhos inválidos e reindexação.

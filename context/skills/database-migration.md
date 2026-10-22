@@ -26,13 +26,15 @@ cd backend
    - índices e restrições únicas;
    - necessidade de `batch_alter_table` no SQLite;
    - downgrade viável.
-6. Aplique:
+   - dados semeados (unidades, tipos etc.) e se o runtime também os garante de forma idempotente.
+6. **Atenção ao batch no SQLite:** recriar uma tabela pai com `batch_alter_table` pode disparar `ON DELETE CASCADE` nas filhas. Na migração de hábitos/mídia, `PRAGMA foreign_keys=OFF` envolve o batch e é reativado ao final; valide com `test_migrations.py` que os registros antigos continuam existindo.
+7. Aplique:
 
 ```powershell
 ..\.venv\Scripts\flask.exe --app run db upgrade
 ```
 
-7. Se a migração estiver errada e ainda **não** tiver sido aplicada, apague o arquivo e gere de novo. Nunca edite uma migração já aplicada.
+8. Se a migração estiver errada e ainda **não** tiver sido aplicada, apague o arquivo e gere de novo. Nunca edite uma migração já aplicada; se o defeito já estiver em uso, prefira uma migração corretiva.
 
 ## Verificação
 

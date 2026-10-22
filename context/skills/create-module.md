@@ -15,9 +15,9 @@ Use quando for adicionar uma funcionalidade com UI, API e persistência própria
 3. Crie o service em `backend/app/services/<modulo>_service.py` com validação, regras e transações.
 4. Crie o blueprint em `backend/app/api/<modulo>.py` e registre em `app/api/__init__.py`.
 5. Adicione serializadores em `app/api/serializers.py` se o contrato for distinto.
-6. Crie migração Alembic (ver [database-migration](database-migration.md)).
+6. Crie migração Alembic (ver [database-migration](database-migration.md)). Se houver catálogo padrão (tipos, unidades), semeie na migração e garanta a criação idempotente em runtime para testes e bancos novos.
 7. Se o módulo usar arquivos canônicos, siga [markdown-persistence](markdown-persistence.md).
-8. Adicione testes em `backend/tests/test_<modulo>.py`.
+8. Adicione testes em `backend/tests/test_<modulo>.py`, incluindo persistência entre instâncias e migração quando houver dados semeados.
 
 ## Frontend
 

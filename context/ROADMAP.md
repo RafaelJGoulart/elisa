@@ -2,6 +2,40 @@
 
 Legenda: **Concluído** = implementado, testado e documentado. **Em andamento** = trabalho ativo. **Planejado** = intenção sem implementação. **Bloqueado** = depende de decisão ou recurso externo.
 
+## v0.2.0 — Concluído (2026-10-22)
+
+### Atividades mensuráveis
+
+- [x] Tipos de hábito binário e mensurável convivendo na mesma entidade.
+- [x] Unidades de medida padrão com conversão restrita à mesma dimensão e unidades personalizadas isoladas.
+- [x] Meta opcional por dia, semana ou mês.
+- [x] Múltiplos registros quantitativos por dia, com quantidade decimal, unidade original e observação.
+- [x] Edição e exclusão de registros com recálculo de estatísticas.
+- [x] Troca de unidade compatível convertendo a meta; bloqueio de troca incompatível com registros.
+- [x] Totais, progresso do período, períodos cumpridos, sequência e média por dia registrado.
+- [x] Grade e resumo de hoje adaptados aos dois tipos.
+- [x] Testes de conversão, frequência, validação, bloqueio de mudança de tipo e persistência.
+
+### Mídia
+
+- [x] Catálogo local com doze tipos padrão e tipos personalizados.
+- [x] Tipos com unidades aceitas, unidade padrão e rótulo.
+- [x] Gêneros reutilizáveis, busca, filtros, ordenação e paginação.
+- [x] Estados, datas, avaliação, totais, durações conhecidas, progresso manual e arquivamento.
+- [x] Eventos independentes de consumo com quantidade, unidade, duração real, revisita e observação.
+- [x] Progresso separado de revisitas e de unidades diferentes.
+- [x] Tempo real, estimado e desconhecido sem mistura.
+- [x] Obras concluídas contadas uma vez e estatísticas por período, tipo, gênero e mês.
+- [x] Páginas de acervo, detalhe e estatísticas integradas à navegação.
+- [x] Testes de progresso, tempo, filtros, cascata, validação e persistência.
+
+### Migração e qualidade
+
+- [x] Migração única para hábitos mensuráveis e mídia, com seed idempotente de unidades e tipos.
+- [x] Preservação de atividades e conclusões existentes durante a recriação em lote no SQLite.
+- [x] Backend com 72 testes aprovados e 1 ignorado.
+- [x] Frontend com 10 arquivos e 33 testes aprovados, lint, typecheck e build.
+
 ## v0.1.0 — Concluído (2026-10-21)
 
 ### Fundação
@@ -73,11 +107,18 @@ Nenhuma frente ativa no momento.
 
 - [ ] Exportação do histórico em CSV ou JSON.
 - [ ] Filtro e agrupamento por categoria.
-- [ ] Arquivamento de atividades sem apagar o histórico.
+- [ ] Ação de arquivamento na interface (a API já aceita `archived`).
 - [ ] Revisão semanal/mensal com resumo de consistência.
 - [ ] Atalhos adicionais de teclado dentro da grade (além de setas, `Home` e `End`).
-- [ ] Metas opcionais por atividade.
 - [ ] Conquistas e marcos — apenas com dado real, sem gamificação artificial.
+
+### Mídia — evoluções
+
+- [ ] Exportação e importação do acervo.
+- [ ] Capas locais e anexos.
+- [ ] Acompanhamento por temporada, episódio ou edição.
+- [ ] Metas de consumo e revisão periódica.
+- [ ] Importação opcional de metadados externos, somente com decisão explícita e consentimento.
 
 ### Diário — evoluções
 

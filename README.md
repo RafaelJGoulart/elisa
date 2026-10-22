@@ -2,9 +2,10 @@
 
 Ambiente pessoal digital modular, local-first e expansível. A Elisa combina acompanhamento de atividades, organização pessoal e, no futuro, uma companheira de IA com acesso controlado ao contexto local.
 
-A primeira versão funcional inclui dois módulos:
+A versão atual inclui três módulos:
 
-- **Atividades:** criação, edição e exclusão de atividades, registro diário de conclusões, histórico em grade de contribuições, sequências e persistência em SQLite.
+- **Atividades:** criação, edição e exclusão de hábitos binários e mensuráveis. Hábitos mensuráveis aceitam unidade, meta opcional e frequência diária, semanal ou mensal; registros quantitativos podem ocorrer várias vezes no mesmo dia. O histórico usa grade de contribuições, sequências e estatísticas por período.
+- **Mídia:** catálogo local de animes, séries, filmes, livros, mangás, jogos, cursos, podcasts e tipos personalizados, com gêneros, busca, filtros, progresso, eventos de consumo e estatísticas de quantidade e tempo. Tempo real, estimado e desconhecido são exibidos separadamente.
 - **Diário:** escrita livre em registros Markdown, com título opcional, etiquetas, busca, filtro por mês, edição e exclusão. O SQLite guarda apenas um índice reconstruível; o texto permanece em `data/diary/`.
 
 ## Stack
@@ -149,7 +150,7 @@ frontend/
   src/
     app/            composição do app e rotas
     components/     ui/ (shadcn/ui) e shared/ (Icon, shell, estados)
-    features/       módulos por funcionalidade (activities, diary, home)
+    features/       módulos por funcionalidade (activities, media, diary, home)
     hooks/          hooks reutilizáveis
     lib/            API, datas, cores, validação do Diário e utilitários
     services/       contratos com o backend

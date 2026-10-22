@@ -2,7 +2,7 @@
 
 Ponto de entrada da memória documental do projeto. Leia apenas o que for relevante para a tarefa atual.
 
-**Estado documentado:** v0.1.0 — 2026-10-21
+**Estado documentado:** v0.2.0 — 2026-10-22
 
 ## Comece aqui
 
@@ -19,8 +19,9 @@ Ponto de entrada da memória documental do projeto. Leia apenas o que for releva
 
 ## Módulos
 
-- [Atividades](modules/activities.md) — CRUD, registros diários, histórico e sequências.
+- [Atividades](modules/activities.md) — hábitos binários e mensuráveis, unidades, metas, histórico e sequências.
 - [Diário](modules/diary.md) — escrita livre em Markdown, índice SQLite reconstruível, busca e edição.
+- [Mídia](modules/media.md) — catálogo local, tipos, gêneros, eventos de consumo, progresso e estatísticas.
 - Conhecimento, Projetos e IA existem apenas como estado planejado na interface. Não há implementação.
 
 ## Operação desktop
@@ -39,6 +40,8 @@ Ponto de entrada da memória documental do projeto. Leia apenas o que for releva
 - [ADR-008 — Sem autenticação na versão local](decisions/ADR-008-sem-autenticacao-local.md)
 - [ADR-009 — Markdown canônico e índice SQLite reconstruível](decisions/ADR-009-markdown-canonico-indice-sqlite.md)
 - [ADR-010 — Launcher desktop local com pywebview](decisions/ADR-010-launcher-desktop-pywebview.md)
+- [ADR-011 — Hábitos mensuráveis sobre a entidade de atividades](decisions/ADR-011-habitos-mensuraveis.md)
+- [ADR-012 — Catálogo local de mídia com eventos de consumo](decisions/ADR-012-media-tracker.md)
 
 ## Skills operacionais
 

@@ -30,9 +30,9 @@ Não há microserviços, filas, cache externo ou banco remoto. O Diário usa Mar
 - `src/app/` — composição do app, router e página 404.
 - `src/components/ui/` — componentes base no estilo shadcn/ui (Button, Dialog, AlertDialog, Dropdown, Input, Tooltip etc.).
 - `src/components/shared/` — Icon, AppShell, PageHeader, estados de carregamento/erro/vazio, ToastProvider, seletor de cor.
-- `src/features/<modulo>/` — páginas, componentes e tipos do módulo.
+- `src/features/<modulo>/` — páginas, componentes e tipos do módulo (`activities`, `media`, `diary`, `home`).
 - `src/services/` — contratos tipados com a API; nenhum componente chama `fetch` diretamente.
-- `src/lib/` — cliente HTTP, datas, cores, validação do Diário e utilitários.
+- `src/lib/` — cliente HTTP, datas, cores, formatação, regras de apresentação de mídia, validação do Diário e utilitários.
 - `src/hooks/` — hooks reutilizáveis, incluindo `useAsyncResource`.
 - `src/styles/globals.css` — tokens e base global.
 
@@ -46,9 +46,12 @@ Não há microserviços, filas, cache externo ou banco remoto. O Diário usa Mar
 
 ### Roteamento
 
-- `/` — início e resumo de hoje.
+- `/` — início e resumo de hoje (hábitos binários e mensuráveis).
 - `/atividades` — lista e gestão de atividades.
-- `/atividades/:id` — histórico, estatísticas e registro diário.
+- `/atividades/:id` — histórico, estatísticas, registros binários e registros quantitativos.
+- `/midia` — acervo com busca, filtros, ordenação, paginação e CRUD.
+- `/midia/estatisticas` — estatísticas de quantidade, tempo e histórico mensal.
+- `/midia/:id` — detalhe, progresso, consumos e edição.
 - `/diario` — escrita, busca, filtro por mês, leitura e edição de registros.
 - `*` — página não encontrada.
 
@@ -88,10 +91,30 @@ Prefixo `/api`. JSON em `camelCase`; banco e código Python em `snake_case`.
 | GET | `/api/activities/:id` | Detalhe da atividade. |
 | PATCH | `/api/activities/:id` | Atualiza campos enviados. |
 | DELETE | `/api/activities/:id` | Exclui atividade e registros (204). |
-| GET | `/api/activities/:id/history?start=&end=` | Histórico e estatísticas no período. |
-| POST | `/api/activities/:id/logs` | Registra conclusão `{ "date": "AAAA-MM-DD" }`. |
-| DELETE | `/api/activities/:id/logs/:date` | Remove registro. |
-| GET | `/api/today` | Resumo de hoje por atividade. |
+| GET | `/api/activities/:id/history?start=&end=` | Histórico binário ou quantitativo e estatísticas no período. |
+| POST | `/api/activities/:id/logs` | Registra conclusão binária `{ "date": "AAAA-MM-DD" }`. |
+| DELETE | `/api/activities/:id/logs/:date` | Remove conclusão binária. |
+| GET | `/api/activities/:id/progress?start=&end=` | Lista registros quantitativos e estatísticas do período. |
+| POST | `/api/activities/:id/progress` | Registra quantidade `{ "date", "amount", "unitId", "note" }`. |
+| PATCH | `/api/activities/:id/progress/:entryId` | Atualiza registro quantitativo. |
+| DELETE | `/api/activities/:id/progress/:entryId` | Remove registro quantitativo. |
+| GET | `/api/units` | Lista unidades de medida, incluindo as padrão. |
+| POST | `/api/units` | Cria unidade personalizada `{ "name", "symbol" }`. |
+| GET | `/api/today` | Resumo de hoje por atividade, com estatísticas. |
+| GET | `/api/media/types` | Lista tipos de mídia e unidades aceitas. |
+| POST | `/api/media/types` | Cria tipo personalizado. |
+| GET | `/api/media/genres` | Lista gêneros existentes. |
+| GET | `/api/media/items?query=&type=&status=&genre=&sort=&limit=&offset=&includeArchived=` | Lista acervo com agregados. |
+| POST | `/api/media/items` | Cria item do acervo. |
+| GET | `/api/media/items/:id` | Detalhe com agregados e eventos. |
+| PATCH | `/api/media/items/:id` | Atualiza item parcialmente. |
+| DELETE | `/api/media/items/:id` | Exclui item e consumos em cascata (204). |
+| GET | `/api/media/items/:id/events` | Lista consumos do item. |
+| POST | `/api/media/items/:id/events` | Registra consumo. |
+| GET | `/api/media/events?start=&end=&type=&genre=&limit=&offset=` | Feed de consumos com filtros. |
+| PATCH | `/api/media/events/:eventId` | Atualiza consumo. |
+| DELETE | `/api/media/events/:eventId` | Remove consumo. |
+| GET | `/api/media/stats?start=&end=&type=&genre=` | Estatísticas de quantidade, tempo, tipo, gênero e mês. |
 | GET | `/api/diary?query=&month=&start=&end=&limit=&offset=` | Lista resumos do Diário. |
 | POST | `/api/diary` | Cria registro em Markdown e no índice. |
 | GET | `/api/diary/:id` | Lê o registro completo do arquivo. |
@@ -115,11 +138,21 @@ Códigos usados: `validation_error` (422), `not_found` (404), `conflict` (409), 
 
 ## Modelo de dados
 
+### `measurement_units`
+
+- `id`, `code` (único), `name`, `symbol`, `category`, `dimension`, `factor`, `is_system`, `created_at`
+- `dimension` define o que pode ser convertido; `factor` converte para a unidade base da dimensão.
+- Unidades personalizadas usam dimensão própria (`custom:<code>`) e nunca são convertidas para outra grandeza.
+- A migração semeia 17 unidades; `measurement_service.ensure_default_units()` garante o catálogo de forma idempotente em bancos criados por testes.
+
 ### `activities`
 
 - `id`, `name`, `description`, `category`, `color`
+- `kind` (`binary` ou `measurable`), `unit_id`, `target_amount`, `frequency`, `archived`
 - `created_at`, `updated_at` em UTC
 - `color` é uma chave da paleta, validada no backend
+- `frequency` é `daily`, `weekly` ou `monthly`; hábitos binários permanecem diários
+- `unit_id` referencia `measurement_units` com `ON DELETE SET NULL`; hábitos mensuráveis exigem unidade
 
 ### `activity_logs`
 
@@ -128,7 +161,47 @@ Códigos usados: `validation_error` (422), `not_found` (404), `conflict` (409), 
 - Restrição única `(activity_id, date)`
 - Foreign key com `ON DELETE CASCADE`; PRAGMA `foreign_keys=ON` habilitado
 
-Registros futuros são rejeitados pela API.
+Registros futuros são rejeitados pela API. Hábitos mensuráveis não usam esta tabela.
+
+### `activity_progress_entries`
+
+- `id`, `activity_id`, `entry_date`, `amount`, `unit_id`, `note`, `created_at`, `updated_at`
+- `amount` usa `NUMERIC(14,4)`; vários registros podem existir no mesmo dia
+- `unit_id` guarda a unidade original do registro e usa `ON DELETE RESTRICT`
+- A agregação converte cada quantidade para a unidade do hábito; o registro original nunca é reescrito
+- Foreign key da atividade com `ON DELETE CASCADE`
+
+### `media_types`
+
+- `id`, `code` (único), `name`, `default_unit`, `unit_label`, `is_system`, `created_at`
+- Doze tipos padrão são semeados pela migração e garantidos de forma idempotente em runtime
+- Tipos personalizados usam `custom-<slug>` e reutilizam o contrato
+
+### `media_genres` e `media_item_genres`
+
+- `media_genres`: `id`, `name` (único), `created_at`
+- `media_item_genres`: associação N:N com `ON DELETE CASCADE` nos dois lados
+- Gêneros são criados sob demanda a partir do texto informado no item
+
+### `media_items`
+
+- `id`, `media_type_id`, `title`, `alternate_title`, `description`, `release_year`, `creator`
+- `total_units`, `total_volumes`, `average_duration_minutes`, `total_duration_minutes`, `unit_label`, `rating`, `notes`
+- `status` (`want`, `in_progress`, `completed`, `paused`, `dropped`), `started_on`, `finished_on`, `archived`
+- `progress_override` permite corrigir o progresso sem apagar o consumo registrado
+- Restrição única `(media_type_id, title)`; tipo com `ON DELETE RESTRICT`
+- `created_at`, `updated_at` em UTC
+
+### `media_consumption_events`
+
+- `id`, `media_item_id`, `consumed_on`, `amount`, `unit`, `duration_minutes`, `note`, `is_repeat`
+- `consumed_on` é data local; `amount` usa `NUMERIC(14,3)`
+- `duration_minutes` representa tempo real informado; quando ausente, a API pode estimar a partir das durações conhecidas do item
+- `is_repeat` marca revisitas: somam no consumo, mas não avançam o progresso
+- Foreign key do item com `ON DELETE CASCADE`
+- `created_at`, `updated_at` em UTC
+
+A classificação de tempo (`real`, `estimated`, `unknown`), a contagem única de obras concluídas e as regras de progresso estão em [modules/media.md](modules/media.md).
 
 ### `diary_entries` (índice)
 
@@ -144,6 +217,7 @@ Detalhes do formato Markdown e das regras em [modules/diary.md](modules/diary.md
 - SQLite em `data/elisa.db`.
 - Diário em Markdown sob `data/diary/AAAA/MM/<id>-<slug>.md`; o SQLite é índice auxiliar.
 - Migrações Alembic em `backend/migrations/`.
+- A migração `3c75e125a588` adiciona hábitos mensuráveis e o acervo de mídia, semeia unidades e tipos e preserva registros existentes. Ela desativa temporariamente as foreign keys do SQLite durante a recriação em lote de `activities` para não apagar `activity_logs`.
 - Nenhuma tabela é criada automaticamente em produção; use `flask db upgrade`.
 - Testes criam esquema isolado com `db.create_all()` em banco temporário.
 - Backup consistente do banco: `scripts/backup_db.py` (API de backup do SQLite).
@@ -182,10 +256,12 @@ Detalhes do formato Markdown e das regras em [modules/diary.md](modules/diary.md
 ## Limitações conhecidas
 
 - Sem autenticação, backup automático, exportação ou importação.
-- Listagem de atividades carrega todos os logs para calcular estatísticas; aceitável no volume pessoal atual, a revisar se crescer.
+- Listagem de atividades carrega todos os logs e registros quantitativos para calcular estatísticas; aceitável no volume pessoal atual, a revisar se crescer.
 - A busca do Diário lê arquivos candidatos; edições manuais nos metadados só entram no índice após reindexação.
+- Estatísticas de mídia carregam itens e eventos em memória; o acervo pessoal atual é pequeno, mas a consulta deve ser paginada/agregada no banco se crescer.
+- Mídia não possui capas, importação externa, temporadas, episódios individualizados ou busca online.
 - O backup do SQLite não inclui `data/diary/`.
 - Bundle inicial único; code splitting será considerado quando o número de módulos crescer.
 - Categoria é texto livre com sugestões; não existe entidade de categoria.
-- Sem testes end-to-end de navegador; testes cobrem API, persistência, calendário, formulários e componentes do Diário.
+- Sem testes end-to-end de navegador; testes cobrem API, persistência, migração, calendário, formulários e componentes de Atividades, Diário e Mídia.
 - O launcher desktop não é empacotado como executável independente e exige o ambiente virtual, o build do frontend e o runtime WebView2.

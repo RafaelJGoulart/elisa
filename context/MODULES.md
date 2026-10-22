@@ -4,9 +4,10 @@ Cada módulo tem limites explícitos, UI própria, serviço de frontend e, quand
 
 | Módulo | Status | Ponto de entrada | Documentação |
 | --- | --- | --- | --- |
-| Início | Concluído (v0.1.0) | `/` | Este documento / [activities.md](modules/activities.md) |
-| Atividades | Concluído (v0.1.0) | `/atividades` | [activities.md](modules/activities.md) |
+| Início | Concluído (v0.2.0) | `/` | Este documento / [activities.md](modules/activities.md) |
+| Atividades | Concluído (v0.2.0) | `/atividades` | [activities.md](modules/activities.md) |
 | Diário | Concluído (v0.1.0) | `/diario` | [diary.md](modules/diary.md) |
+| Mídia | Concluído (v0.2.0) | `/midia` | [media.md](modules/media.md) |
 | Operação desktop | Concluído (v0.1.0) | `elisa_desktop.py` | [ADR-010](decisions/ADR-010-launcher-desktop-pywebview.md) |
 | Conhecimento | Planejado | — | Roadmap |
 | Projetos | Planejado | — | Roadmap |
@@ -14,19 +15,19 @@ Cada módulo tem limites explícitos, UI própria, serviço de frontend e, quand
 
 ## Atividades
 
-**Responsabilidade:** acompanhar hábitos e práticas por data, com histórico visual, sequências e persistência local.
+**Responsabilidade:** acompanhar hábitos binários e mensuráveis por data, com unidades, metas opcionais, frequência, histórico visual, sequências e persistência local.
 
-**Dependências:** banco SQLite, API Flask, componentes compartilhados de UI, paleta de cores.
+**Dependências:** banco SQLite, API Flask, componentes compartilhados de UI, paleta de cores e unidades de medida.
 
 **Frontend:**
 - `frontend/src/features/activities/pages/ActivitiesPage.tsx`
 - `frontend/src/features/activities/pages/ActivityDetailPage.tsx`
-- componentes em `frontend/src/features/activities/components/`
+- componentes em `frontend/src/features/activities/components/`, incluindo `ProgressEntryDialog` e `DeleteProgressEntryDialog`
 - serviço em `frontend/src/services/activities.ts`
 
 **Backend:**
 - rotas em `backend/app/api/activities.py`
-- regras em `backend/app/services/activity_service.py`
+- regras em `backend/app/services/activity_service.py` e `backend/app/services/measurement_service.py`
 - dados em `backend/app/repositories/activity_repository.py`
 - modelos em `backend/app/models/activity.py`
 
@@ -60,6 +61,28 @@ Cada módulo tem limites explícitos, UI própria, serviço de frontend e, quand
 - modelo do índice em `backend/app/models/diary.py`
 
 **Contratos e limitações:** ver [diary.md](modules/diary.md).
+
+## Mídia
+
+**Responsabilidade:** manter um acervo local de animes, séries, filmes, livros, mangás, jogos, cursos, podcasts e tipos personalizados, registrando consumos independentes, progresso e estatísticas de quantidade e tempo.
+
+**Dependências:** banco SQLite, API Flask, componentes compartilhados de UI e catálogo de tipos/gêneros.
+
+**Frontend:**
+- `frontend/src/features/media/pages/MediaPage.tsx`
+- `frontend/src/features/media/pages/MediaDetailPage.tsx`
+- `frontend/src/features/media/pages/MediaStatsPage.tsx`
+- componentes em `frontend/src/features/media/components/`
+- utilitários em `frontend/src/lib/media.ts`
+- serviço em `frontend/src/services/media.ts`
+
+**Backend:**
+- rotas em `backend/app/api/media.py`
+- regras em `backend/app/services/media_service.py`
+- dados em `backend/app/repositories/media_repository.py`
+- modelos em `backend/app/models/media.py`
+
+**Contratos e limitações:** ver [media.md](modules/media.md).
 
 ## Operação desktop
 

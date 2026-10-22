@@ -15,11 +15,18 @@ Cubra:
 - regras de data e unicidade;
 - persistência entre instâncias da aplicação;
 - cascata e efeitos colaterais;
+- conversão apenas entre unidades da mesma dimensão e preservação da unidade original;
+- múltiplos registros no mesmo dia e recálculo após editar/excluir;
+- progresso de mídia separado de revisitas e de unidades diferentes;
+- tempo real, estimado e desconhecido sem mistura;
+- migração preservando dados existentes e semeando catálogos;
 - arquivos canônicos em diretório temporário, reindexação e falha de escrita (ver [markdown-persistence](markdown-persistence.md)).
 
 ```powershell
 .\.venv\Scripts\python.exe -m pytest
 .\.venv\Scripts\python.exe -m pytest backend\tests\test_logs.py -q
+.\.venv\Scripts\python.exe -m pytest backend\tests\test_habits.py backend\tests\test_media.py -q
+.\.venv\Scripts\python.exe -m pytest backend\tests\test_migrations.py -q
 ```
 
 Não use o banco real nos testes.
@@ -35,6 +42,9 @@ Priorize comportamento:
 - estados da grade e seleção de dia;
 - composição de texto, edição com descarte confirmado e busca;
 - estados de erro/vazio, incluindo preservação do texto digitado;
+- diálogo de progresso: quantidade, unidade compatível e edição;
+- diálogo de consumo de mídia: unidades derivadas do tipo e revisita;
+- utilitários puros de mídia (rótulos, ícones e opções de unidade);
 - navegação essencial.
 
 Evite testes que apenas verificam renderização sem regra.

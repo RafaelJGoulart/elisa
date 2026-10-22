@@ -1,7 +1,7 @@
 # ADR-004 — Um registro por atividade e dia
 
 - Data: 2026-10-21
-- Status: Aceita
+- Status: Aceita — mantida para hábitos binários e estendida por [ADR-011](ADR-011-habitos-mensuraveis.md) para hábitos mensuráveis
 
 ## Contexto
 
@@ -30,6 +30,6 @@ Um registro binário por `(activity_id, date)`, garantido por restrição única
 
 ## Consequências e limitações
 
-- Não há quantidade, duração ou anotações por dia.
-- Funcionalidades futuras de quantidade exigiriam extensão do modelo (novo campo ou tabela) e migração.
+- Para hábitos binários, não há quantidade, duração ou anotações por dia.
+- A necessidade de quantidade foi atendida por `activity_progress_entries`, sem alterar a unicidade dos registros binários (ver ADR-011).
 - A data é local (`YYYY-MM-DD`), sem hora; timestamps de criação são UTC.

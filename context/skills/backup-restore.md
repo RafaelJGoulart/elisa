@@ -37,7 +37,7 @@ cd backend
 ..\.venv\Scripts\flask.exe --app run db upgrade
 ```
 
-5. Inicie o backend e confirme health, lista de atividades, histórico e Diário.
+5. Inicie o backend e confirme health, lista de atividades, histórico, acervo de mídia e Diário.
 6. Se o índice do Diário estiver vazio, reindexe:
    `Invoke-RestMethod -Method Post http://127.0.0.1:5000/api/diary/reindex`.
 7. Rode os testes: `.\.venv\Scripts\python.exe -m pytest`.

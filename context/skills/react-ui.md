@@ -12,6 +12,9 @@
 - Componentes específicos em `src/features/<modulo>/components/`.
 - Busca de dados via `services/` + `useAsyncResource`; nunca `fetch` direto.
 - Regra de negócio fica no backend.
+- Unidades de hábito vêm de `/api/units`; unidades aceitas por tipo de mídia vêm de `type.units`. Não replique conversões ou tabelas de compatibilidade no frontend.
+- Quantidades usam `lib/format.ts`; tempo real, estimado e desconhecido têm rótulos e estilos distintos.
+- Datas de registro vêm da API em `YYYY-MM-DD`; use `lib/dates.ts` em vez de `toISOString()`.
 
 ## Checklist visual
 
@@ -40,6 +43,7 @@
 
 - Formulários: envio válido, erros de validação, estado de edição.
 - Componentes interativos: seleção, estados e ações.
+- Diálogos de quantidade e consumo: payload correto, unidade obrigatória e erros.
 - Injete datas fixas (prop `today`) em vez de depender do relógio.
 
 ```powershell

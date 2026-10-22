@@ -117,15 +117,16 @@ Compartilhados:
 - `EmptyState`, `LoadingState`, `ErrorState` — estados padronizados; `EmptyState` e `ErrorState` aceitam `headingLevel` para virar `h1` quando ocupam a página inteira.
 - `ToastProvider` (`shared/ToastProvider.tsx`) e `useToast` (`shared/toast-context.ts`) — feedback com `aria-live`.
 - `ColorSwatchPicker` — seleção acessível de cor por rádio nativo.
-- `ActivityStats`, `ActivityCard`, `ContributionCalendar`, `MiniContributionGrid`.
+- `ActivityStats`, `ActivityCard`, `ContributionCalendar`, `MiniContributionGrid`, `ProgressEntryDialog`, `DeleteProgressEntryDialog`.
 - `DiaryComposer`, `DiaryEntryList`, `DiaryEntryDialog`, `DiaryEditorDialog`, `DeleteDiaryEntryDialog`.
+- `MediaCard`, `MediaBadges`, `MediaProgressBar`, `MediaItemDialog`, `MediaEventDialog`, `MediaConfirmDialog`.
 
 ## Página inicial
 
 - A tela inicial tem três blocos: saudação com data por extenso, resumo de hoje e aviso local-first.
 - Não há mapa de módulos na tela inicial. A navegação entre módulos fica na sidebar (e no menu móvel), que já rotula os módulos planejados como "em breve".
 - As atividades do dia são cartões finos em grade: 1 coluna no celular, 2 a partir de `sm` e 3 a partir de `lg` (`grid gap-3 sm:grid-cols-2 lg:grid-cols-3`).
-- Cada cartão traz cor, nome (link para o detalhe), categoria, sequência atual, prévia de 12 semanas e o botão de registrar/desfazer. O `mt-auto` alinha os botões entre cartões com alturas diferentes.
+- Cada cartão traz cor, nome (link para o detalhe), categoria, sequência atual, prévia de 12 semanas e a ação principal: registrar/desfazer em hábitos binários ou abrir o detalhe para registrar quantidade em hábitos mensuráveis. O `mt-auto` alinha os botões entre cartões com alturas diferentes.
 - O resumo "X de Y atividades concluídas" fica acima da grade, fora de um painel próprio, com "Tudo feito por hoje" quando tudo foi concluído.
 
 ## Grade de contribuições
@@ -154,6 +155,30 @@ Compartilhados:
 - Busca com debounce, limpeza explícita e filtro por mês; o mês ativo aparece na URL.
 - Falha de salvamento mantém o texto digitado e mostra alerta inline; não fecha o diálogo nem descarta conteúdo.
 - O aviso local-first é textual, discreto e não promete sincronização.
+
+## Hábitos mensuráveis
+
+- O formulário de atividade alterna entre **binário** e **mensurável** com controles explícitos; ao escolher mensurável, unidade, meta e frequência aparecem no mesmo diálogo, sem etapas escondidas.
+- Unidades são agrupadas pela categoria da API (Volume, Distância, Tempo etc.). A criação de unidade personalizada usa nome e símbolo curtos e deixa claro que ela não será convertida para outras grandezas.
+- Meta é opcional; quando existe, o detalhe mostra `quantidade / meta`, barra de progresso com `role="progressbar"` e o percentual do período atual.
+- Sem meta, a interface informa que o período registra apenas a quantidade realizada; não inventa um alvo.
+- O painel do dia lista cada registro com quantidade na unidade original, observação, horário e ações de editar/excluir. Vários registros no mesmo dia são normais e aparecem separados.
+- A grade destaca dias com meta atingida na frequência diária e dias com registro nas frequências semanal/mensal; a legenda e a descrição do período explicam a diferença.
+- A sequência é por período (dia, semana ou mês), não por dia, quando a frequência não é diária.
+- Números quantitativos usam `font-mono` e a formatação de `lib/format.ts`; a unidade acompanha o valor.
+
+## Mídia
+
+- O acervo usa uma grade de cards, não uma tabela: tipo, título, estado, progresso, consumo e último consumo precisam ser legíveis em uma varredura.
+- Não há capa fictícia. A ausência de imagem é tratada como ausência, sem placeholder que pareça conteúdo real.
+- Cores de estado: `in_progress` usa o roxo primário, `completed` verde, `paused` amarelo, `dropped` vermelho e `want` contorno neutro. O texto do badge sempre acompanha a cor.
+- Tempo real usa badge verde com ícone de relógio; tempo estimado usa badge amarelo com `~`; tempo desconhecido usa contorno com ícone de ajuda e o texto "tempo não informado". Estimativa nunca aparece como tempo real.
+- A barra de progresso é uma barra fina e neutra com preenchimento na cor de identidade; quando não há total conhecido, mostra apenas o consumo acumulado.
+- Revisitas são identificadas no histórico e explicadas no texto: somam no consumo, não no progresso.
+- O diálogo de consumo deriva as unidades do `type.units` enviado pela API; não duplica a tabela de compatibilidade no frontend.
+- O diálogo de item separa identificação (tipo, título, criador, ano), classificação (gêneros, estado, avaliação), totais e durações, progresso manual, datas, arquivamento e observações.
+- Estatísticas distinguem quantidade, tempo real, tempo estimado e eventos sem tempo; não somam estimativas ao tempo real.
+- Filtros e busca ficam em uma faixa única acima da grade; estados vazios explicam o próximo passo real (adicionar mídia ou registrar consumo).
 
 ## Janela de controle desktop
 
