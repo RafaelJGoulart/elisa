@@ -909,6 +909,38 @@ button,
   outline: none;
 }
 
+.planar-node__glow {
+  opacity: 0.58;
+  mix-blend-mode: screen;
+  transition: opacity 160ms ease;
+}
+
+.planar-node:hover .planar-node__glow,
+.planar-node:focus-visible .planar-node__glow,
+.planar-node.is-selected .planar-node__glow {
+  opacity: 1;
+}
+
+.planar-node.is-dimmed .planar-node__glow {
+  opacity: 0.1;
+}
+
+.planar-spark {
+  filter: drop-shadow(0 0 3px currentColor);
+}
+
+.planar-core__halo {
+  mix-blend-mode: screen;
+}
+
+.planar-core__ring {
+  filter: drop-shadow(0 0 5px rgba(143, 224, 228, 0.34));
+}
+
+.planar-core__hit {
+  cursor: help;
+}
+
 .planar-node__label {
   font-family: var(--sans);
   font-size: 11px;

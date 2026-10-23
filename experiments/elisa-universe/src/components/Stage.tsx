@@ -143,8 +143,10 @@ export function Stage({
             activeNodes={activeNodes}
             activeEdges={activeEdges}
             selectedId={selectedId}
+            motion={motion}
             resetToken={resetToken}
             onSelect={onSelect}
+            onHover={handleHover}
           />
         )}
       </div>
