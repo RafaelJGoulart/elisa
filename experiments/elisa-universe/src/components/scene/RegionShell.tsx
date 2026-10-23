@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import * as THREE from 'three'
+import { useThree } from '@react-three/fiber'
 import { CATEGORY_META } from '@/data/categories'
 import type { Point3 } from '@/lib/layout'
 import type { CategoryKey } from '@/types/universe'
@@ -87,6 +88,10 @@ function buildLabelTexture(category: CategoryKey, nodeCount: number): LabelTextu
 
 export function RegionShell({ category, anchor, nodeCount }: RegionShellProps) {
   const meta = CATEGORY_META[category]
+  const size = useThree((state) => state.size)
+  const compact = size.width / Math.max(1, size.height) < 1.1
+  const labelScale = compact ? 0.56 : 0.62
+  const labelOffset = compact ? 3.02 : 3.35
   const label = useMemo(
     () => buildLabelTexture(category, nodeCount),
     [category, nodeCount],
@@ -128,8 +133,8 @@ export function RegionShell({ category, anchor, nodeCount }: RegionShellProps) {
       </mesh>
 
       <sprite
-        position={[0, category === 'projects' ? -3.35 : 3.35, 0]}
-        scale={[0.62 * label.aspect, 0.62, 1]}
+        position={[0, category === 'projects' ? -labelOffset : labelOffset, 0]}
+        scale={[labelScale * label.aspect, labelScale, 1]}
         renderOrder={10}
       >
         <spriteMaterial

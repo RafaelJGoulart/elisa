@@ -1,7 +1,12 @@
 import { useMemo } from 'react'
 import { CATEGORY_ORDER } from '@/data/categories'
 import { buildGraphPositions, getRegionAnchor } from '@/lib/layout'
-import type { UniverseDataset, UniverseEdge, UniverseNode } from '@/types/universe'
+import type {
+  HoverHandler,
+  UniverseDataset,
+  UniverseEdge,
+  UniverseNode,
+} from '@/types/universe'
 import { CameraRig } from '@/components/scene/CameraRig'
 import { ConnectionLines } from '@/components/scene/ConnectionLines'
 import { CoreOrb } from '@/components/scene/CoreOrb'
@@ -19,6 +24,7 @@ interface RegionsSceneProps {
   motion: boolean
   resetToken: number
   onSelect: (nodeId: string) => void
+  onHover: HoverHandler
 }
 
 function AmbientOrbits() {
@@ -50,6 +56,7 @@ export function RegionsScene({
   motion,
   resetToken,
   onSelect,
+  onHover,
 }: RegionsSceneProps) {
   const positions = useMemo(() => buildGraphPositions(dataset, 'regions'), [dataset])
   const activeCategories = useMemo(
@@ -66,8 +73,8 @@ export function RegionsScene({
 
   return (
     <>
-      <color attach="background" args={['#04060b']} />
-      <fog attach="fog" args={['#04060b', 16, 70]} />
+      <color attach="background" args={['#0b0b0d']} />
+      <fog attach="fog" args={['#0b0b0d', 16, 70]} />
       <ambientLight intensity={0.5} />
       <hemisphereLight args={['#b7ddff', '#0f1220', 0.48]} />
       <directionalLight position={[8, 11, 9]} intensity={0.9} color="#c7e4ff" />
@@ -75,7 +82,7 @@ export function RegionsScene({
 
       <Starfield motion={motion} count={1100} />
       <AmbientOrbits />
-      <CoreOrb motion={motion} />
+      <CoreOrb motion={motion} onHover={onHover} />
       <CameraRig mode="regions" resetToken={resetToken} motion={motion} />
 
       {CATEGORY_ORDER.map((category) => {
@@ -96,6 +103,7 @@ export function RegionsScene({
         positions={positions}
         selectedId={selectedId}
         mode="regions"
+        motion={motion}
       />
 
       {activeNodes.map((node) => {
@@ -111,6 +119,7 @@ export function RegionsScene({
             dimmed={dimmed}
             motion={motion}
             onSelect={onSelect}
+            onHover={onHover}
           />
         )
       })}

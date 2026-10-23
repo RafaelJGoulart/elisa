@@ -18,6 +18,22 @@ export type RelationKind = 'supports' | 'references' | 'inspires' | 'ritual'
 
 export type ViewMode = 'spatial' | 'regions' | 'planar'
 
+export interface HoverPoint {
+  x: number
+  y: number
+}
+
+export interface HoverTarget {
+  title: string
+  color: string
+  kind?: string
+}
+
+export type HoverHandler = (
+  target: HoverTarget | null,
+  position?: HoverPoint,
+) => void
+
 export interface CategoryMeta {
   key: CategoryKey
   label: string

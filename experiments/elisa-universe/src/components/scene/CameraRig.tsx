@@ -26,7 +26,7 @@ export function CameraRig({ mode, resetToken, motion }: CameraRigProps) {
     const halfFov = Math.tan((48 * Math.PI) / 360)
     const aspect = size.width / Math.max(1, size.height)
     const narrow = aspect < 0.9
-    const overviewLimit = mode === 'regions' ? (narrow ? 30 : 46) : narrow ? 24 : 36
+    const overviewLimit = mode === 'regions' ? (narrow ? 54 : 46) : narrow ? 40 : 36
     const distance = Math.min(
       overviewLimit,
       Math.max(6, (base.radius / (halfFov * Math.min(1, aspect))) * 1.06),
@@ -57,7 +57,7 @@ export function CameraRig({ mode, resetToken, motion }: CameraRigProps) {
       minDistance={6}
       maxDistance={60}
       autoRotate={mode === 'regions' && motion}
-      autoRotateSpeed={0.26}
+      autoRotateSpeed={0.38}
       rotateSpeed={0.55}
       zoomSpeed={0.75}
       panSpeed={0.6}

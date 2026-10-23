@@ -1,8 +1,10 @@
-import { Suspense } from 'react'
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { getModeMeta } from '@/data/modes'
 import type {
   CategoryKey,
+  HoverHandler,
+  HoverTarget,
   UniverseDataset,
   UniverseEdge,
   UniverseNode,
@@ -43,9 +45,55 @@ export function Stage({
   const modeMeta = getModeMeta(mode)
   const is3D = mode !== 'planar'
   const cameraPosition: [number, number, number] = mode === 'regions' ? [0, 3, 19] : [0, 0, 16]
+  const stageRef = useRef<HTMLElement>(null)
+  const [hover, setHover] = useState<{
+    target: HoverTarget
+    x: number
+    y: number
+  } | null>(null)
+
+  const handleHover = useCallback<HoverHandler>((target, point) => {
+    if (!target || !point) {
+      setHover(null)
+      return
+    }
+
+    const rect = stageRef.current?.getBoundingClientRect()
+    setHover({
+      target,
+      x: point.x - (rect?.left ?? 0),
+      y: point.y - (rect?.top ?? 0),
+    })
+  }, [])
+
+  useEffect(() => {
+    setHover(null)
+  }, [mode])
+
+  const tooltip = hover ? (
+    <div
+      className="node-tooltip"
+      style={{
+        left: Math.max(12, Math.min(hover.x + 16, (stageRef.current?.clientWidth ?? 0) - 232)),
+        top: Math.max(12, Math.min(hover.y + 18, (stageRef.current?.clientHeight ?? 0) - 58)),
+      }}
+      role="tooltip"
+      aria-hidden="true"
+    >
+      <span
+        className="node-tooltip__dot"
+        style={{ backgroundColor: hover.target.color }}
+      />
+      <span className="node-tooltip__title">{hover.target.title}</span>
+      {hover.target.kind ? (
+        <span className="node-tooltip__kind">{hover.target.kind}</span>
+      ) : null}
+    </div>
+  ) : null
 
   return (
     <section
+      ref={stageRef}
       className={`stage stage--${mode}`}
       data-mode={mode}
       aria-label={`Visualização ${modeMeta.label}. ${modeMeta.description}`}
@@ -71,6 +119,7 @@ export function Stage({
                   motion={motion}
                   resetToken={resetToken}
                   onSelect={onSelect}
+                  onHover={handleHover}
                 />
               ) : (
                 <RegionsScene
@@ -83,6 +132,7 @@ export function Stage({
                   motion={motion}
                   resetToken={resetToken}
                   onSelect={onSelect}
+                  onHover={handleHover}
                 />
               )}
             </Suspense>
@@ -100,6 +150,8 @@ export function Stage({
       </div>
 
       <div className="stage__grain" aria-hidden="true" />
+
+      {tooltip}
 
       <div className="mode-caption">
         <span className="mode-caption__letter">{modeMeta.letter}</span>

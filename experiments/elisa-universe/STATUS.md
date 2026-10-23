@@ -1,6 +1,6 @@
 # Status do laboratório · Universo pessoal
 
-Data: 2026-10-22
+Data: 2026-10-23
 
 Protótipo independente e navegável. Não faz parte da aplicação principal da Elisa e não acessa backend, banco, autenticação ou dados reais.
 
@@ -16,7 +16,11 @@ Protótipo independente e navegável. Não faz parte da aplicação principal da
 - Adicionados estados vazios, lista textual acessível, foco visível, navegação por teclado e respeito a `prefers-reduced-motion`.
 - Adicionados favicon, identidade visual e aviso permanente de dados fictícios.
 - Documentado o protótipo em `README.md`.
+- Registrados diagnóstico, contrato preliminar, avaliação técnica e plano em `PROPOSAL.md`.
 - Instaladas e fixadas as dependências em `package.json` e `package-lock.json`.
+- Adicionados 21 testes unitários para busca, filtros, conexões, layout determinístico e integridade do conjunto fictício.
+- Adicionadas camadas de atmosfera: halo aditivo nos astros e no núcleo, partículas viajando pelas conexões com velocidades e defasagens diferentes, rotação automática mais perceptível no modo B e tooltip junto ao cursor ao passar sobre um nó ou sobre o núcleo “Elisa” no modo B.
+- Alinhada a moldura da interface à identidade da Elisa real: tokens de fundo e superfície, bordas de 1 px, roxo como foco, Inter Variable e JetBrains Mono Variable locais, marca triangular, controles com raios de 8–12 px e tipografia sem serifa. O fundo das cenas 3D passou a usar `#0B0B0D`; nós, conexões, materiais e cores de categoria foram preservados.
 
 ## Correções e ajustes realizados
 
@@ -27,25 +31,31 @@ Protótipo independente e navegável. Não faz parte da aplicação principal da
 - Adicionada câmera adaptativa por proporção da tela, com limites de visão geral.
 - Ampliados os planos de neblina e ajustados os tamanhos dos rótulos nos modos 3D.
 - Adicionadas proteções de largura no layout e ajuste mobile da barra superior e do botão de visão geral.
+- Reduzidos os rótulos das regiões e aproximados do centro em telas estreitas, corrigindo o corte lateral do modo B.
+- Extraída a busca e o filtro de `App.tsx` para `lib/universe.ts`, permitindo testes sem montar a cena.
 
 ## Validação
 
-- `npm run check` passou com lint sem avisos/erros, typecheck sem erros e build concluído.
+- `npm run check` passou com lint sem avisos/erros, typecheck sem erros, **21 testes unitários aprovados** e build concluído.
 - O build gera apenas o aviso de chunk principal acima de 500 kB por causa de `three` e `@react-three/drei`; não é erro.
 - QA visual desktop em 1440×900 nos modos A, B e C, sem exceções de runtime.
 - QA visual mobile em 390×844 via CDP, sem overflow horizontal; barra superior, abas e ações permanecem dentro da viewport.
+- Modo B revalidado em 390×844 com iframe local após o ajuste de câmera e rótulos: nenhuma esfera ou rótulo ficou cortado, mas a cena ocupa menos altura e os rótulos ficam pequenos; a lista e a legenda continuam sendo a leitura confiável nessa largura.
+- Halo dos astros, partículas nas conexões e tooltip verificados visualmente nos modos A e B, sem erros de console; no modo B, o núcleo central identifica “Elisa · Núcleo”.
+- Identidade visual validada em 1440×900 e 390×844 nos modos A, B e C, com painel de detalhes aberto e sem overflow horizontal. A fonte computada é Inter Variable e o fundo é `rgb(11, 11, 13)`.
+- Partículas e rotação automática são desligadas quando “Movimento” está inativo ou quando o sistema pede movimento reduzido.
 - Verificados seleção de “Atlas de bolso” com seis relações, busca por “estufa” com três resultados e estado vazio de busca.
 - Para testar 390 px de largura de verdade, foi necessário usar CDP `Emulation.setDeviceMetricsOverride`; o Chrome headless via linha de comando impõe largura mínima de 500 px.
 
 ## O que não foi feito
 
 - Nenhuma integração com a Elisa principal, backend, banco de dados, autenticação ou dados reais.
-- Nenhum contrato de dados real, persistência, edição de registros ou edição de relações.
+- Nenhum contrato de dados real implementado, persistência, edição de registros ou edição de relações. O contrato preliminar está documentado, não codificado.
 - Nenhum sistema de conta, IA ou integração externa.
-- Nenhum teste automatizado próprio de UI ou E2E; a validação foi feita por lint, typecheck, build e QA visual headless.
+- Nenhum teste de UI montada ou E2E; os testes cobrem lógica pura, dados e layout. A validação visual continua manual.
 - Nenhuma decisão de produto sobre incorporar o laboratório à aplicação principal.
 - Nenhuma otimização de bundle ou divisão de código.
-- O modo B em telas muito estreitas ainda pode encostar ou cortar rótulos/esferas nas laterais; o desktop está estável e o ajuste fino ficou pendente.
+- O ajuste do modo B em telas muito estreitas foi mitigado por escala e posição dos rótulos, mas não foi revalidado em dispositivo físico.
 
 ## Como executar
 
@@ -65,6 +75,7 @@ O Vite usa `http://localhost:5180` por padrão.
 ```powershell
 npm run lint
 npm run typecheck
+npm run test
 npm run build
 # ou
 npm run check
@@ -85,7 +96,7 @@ experiments/elisa-universe/
 │   │   └── Stage.tsx
 │   ├── data/               # registros fictícios e metadados de categorias/modos
 │   ├── hooks/              # preferência de movimento reduzido
-│   ├── lib/                # layouts, aleatoriedade determinística e utilidades
+│   ├── lib/                # layouts, busca/filtros, aleatoriedade determinística e utilidades
 │   ├── types/              # contrato local do universo
 │   ├── App.tsx
 │   ├── main.tsx
@@ -94,6 +105,8 @@ experiments/elisa-universe/
 ├── package.json
 ├── package-lock.json
 ├── README.md
+├── PROPOSAL.md
+├── STATUS.md
 └── vite.config.ts
 ```
 

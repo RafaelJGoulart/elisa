@@ -1,3 +1,4 @@
+import { ElisaMark } from '@/components/ElisaMark'
 import { MODES } from '@/data/modes'
 import type { ViewMode } from '@/types/universe'
 
@@ -23,10 +24,8 @@ export function Header({
   return (
     <header className="topbar">
       <div className="brand-block">
-        <div className="brand-orbit" aria-hidden="true">
-          <span />
-        </div>
-        <div>
+        <ElisaMark size={28} className="brand-mark" />
+        <div className="brand-copy">
           <p className="eyebrow">Elisa · laboratório independente</p>
           <h1>Universo pessoal</h1>
         </div>

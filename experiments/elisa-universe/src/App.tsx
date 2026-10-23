@@ -2,20 +2,13 @@ import { useEffect, useMemo, useState } from 'react'
 import { CATEGORY_ORDER } from '@/data/categories'
 import { MOCK_UNIVERSE } from '@/data/mockUniverse'
 import { getConnectedNodeIds } from '@/lib/layout'
+import { filterEdges, filterNodes } from '@/lib/universe'
 import type { CategoryKey, ViewMode } from '@/types/universe'
 import { DetailsPanel } from '@/components/DetailsPanel'
 import { Header } from '@/components/Header'
 import { Sidebar } from '@/components/Sidebar'
 import { Stage } from '@/components/Stage'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
-
-function normalize(value: string): string {
-  return value
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLocaleLowerCase('pt-BR')
-    .trim()
-}
 
 export default function App() {
   const prefersReducedMotion = usePrefersReducedMotion()
@@ -38,25 +31,15 @@ export default function App() {
     [],
   )
 
-  const activeNodes = useMemo(() => {
-    const search = normalize(query)
-    return MOCK_UNIVERSE.nodes.filter((node) => {
-      if (!activeCategories.has(node.category)) return false
-      if (!search) return true
-      const haystack = normalize(
-        [node.title, node.summary, node.detail, node.tags.join(' ')].join(' '),
-      )
-      return haystack.includes(search)
-    })
-  }, [activeCategories, query])
+  const activeNodes = useMemo(
+    () => filterNodes(MOCK_UNIVERSE.nodes, activeCategories, query),
+    [activeCategories, query],
+  )
 
   const activeNodeIds = useMemo(() => new Set(activeNodes.map((node) => node.id)), [activeNodes])
 
   const activeEdges = useMemo(
-    () =>
-      MOCK_UNIVERSE.edges.filter(
-        (edge) => activeNodeIds.has(edge.source) && activeNodeIds.has(edge.target),
-      ),
+    () => filterEdges(MOCK_UNIVERSE.edges, activeNodeIds),
     [activeNodeIds],
   )
 

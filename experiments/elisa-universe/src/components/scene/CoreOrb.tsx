@@ -1,14 +1,18 @@
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import type { HoverHandler } from '@/types/universe'
+import { getGlowTexture } from './glowTexture'
 
 interface CoreOrbProps {
   motion: boolean
+  onHover: HoverHandler
 }
 
-export function CoreOrb({ motion }: CoreOrbProps) {
+export function CoreOrb({ motion, onHover }: CoreOrbProps) {
   const groupRef = useRef<THREE.Group>(null)
   const ringsRef = useRef<THREE.Group>(null)
+  const glowTexture = useMemo(() => getGlowTexture(), [])
 
   useFrame((_, delta) => {
     if (!motion) return
@@ -21,6 +25,19 @@ export function CoreOrb({ motion }: CoreOrbProps) {
 
   return (
     <group>
+      <sprite scale={[3.6, 3.6, 1]} renderOrder={-1} raycast={() => null}>
+        <spriteMaterial
+          map={glowTexture}
+          color="#8ee3ff"
+          transparent
+          opacity={0.46}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+          depthTest={false}
+          toneMapped={false}
+        />
+      </sprite>
+
       <group ref={groupRef}>
         <mesh>
           <sphereGeometry args={[0.34, 32, 32]} />
@@ -32,7 +49,17 @@ export function CoreOrb({ motion }: CoreOrbProps) {
             toneMapped={false}
           />
         </mesh>
-        <mesh scale={2.1}>
+        <mesh
+          scale={2.1}
+          onPointerOver={(event) => {
+            event.stopPropagation()
+            onHover(
+              { title: 'Elisa', color: '#8fe0e4', kind: 'Núcleo' },
+              { x: event.clientX, y: event.clientY },
+            )
+          }}
+          onPointerOut={() => onHover(null)}
+        >
           <sphereGeometry args={[0.34, 18, 18]} />
           <meshBasicMaterial
             color="#80d4ff"

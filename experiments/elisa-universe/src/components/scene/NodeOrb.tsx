@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { CATEGORY_META } from '@/data/categories'
 import { getNodeRadius, type Point3 } from '@/lib/layout'
-import type { UniverseNode } from '@/types/universe'
+import type { HoverHandler, UniverseNode } from '@/types/universe'
 import { NodeGeometry } from './NodeGeometry'
+import { getGlowTexture } from './glowTexture'
 
 interface NodeOrbProps {
   node: UniverseNode
@@ -13,13 +14,24 @@ interface NodeOrbProps {
   dimmed: boolean
   motion: boolean
   onSelect: (nodeId: string) => void
+  onHover: HoverHandler
 }
 
-export function NodeOrb({ node, position, selected, dimmed, motion, onSelect }: NodeOrbProps) {
+export function NodeOrb({
+  node,
+  position,
+  selected,
+  dimmed,
+  motion,
+  onSelect,
+  onHover,
+}: NodeOrbProps) {
   const [hovered, setHovered] = useState(false)
   const groupRef = useRef<THREE.Group>(null)
   const meta = CATEGORY_META[node.category]
   const radius = getNodeRadius(node)
+  const glowTexture = useMemo(() => getGlowTexture(), [])
+  const glowScale = radius * (selected ? 8.4 : hovered ? 7.2 : 6)
 
   useEffect(() => {
     return () => {
@@ -36,6 +48,23 @@ export function NodeOrb({ node, position, selected, dimmed, motion, onSelect }: 
 
   return (
     <group ref={groupRef} position={position}>
+      <sprite
+        scale={[glowScale, glowScale, 1]}
+        renderOrder={-1}
+        raycast={() => null}
+      >
+        <spriteMaterial
+          map={glowTexture}
+          color={meta.color}
+          transparent
+          opacity={dimmed ? 0.04 : selected ? 0.52 : hovered ? 0.38 : 0.24}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+          depthTest={false}
+          toneMapped={false}
+        />
+      </sprite>
+
       <mesh
         onClick={(event) => {
           event.stopPropagation()
@@ -44,10 +73,15 @@ export function NodeOrb({ node, position, selected, dimmed, motion, onSelect }: 
         onPointerOver={(event) => {
           event.stopPropagation()
           setHovered(true)
+          onHover(
+            { title: node.title, color: meta.color, kind: meta.singular },
+            { x: event.clientX, y: event.clientY },
+          )
           document.body.style.cursor = 'pointer'
         }}
         onPointerOut={() => {
           setHovered(false)
+          onHover(null)
           document.body.style.cursor = ''
         }}
       >

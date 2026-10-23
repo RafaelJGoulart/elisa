@@ -1,6 +1,11 @@
 import { useMemo } from 'react'
 import { buildGraphPositions } from '@/lib/layout'
-import type { UniverseDataset, UniverseEdge, UniverseNode } from '@/types/universe'
+import type {
+  HoverHandler,
+  UniverseDataset,
+  UniverseEdge,
+  UniverseNode,
+} from '@/types/universe'
 import { CameraRig } from '@/components/scene/CameraRig'
 import { ConnectionLines } from '@/components/scene/ConnectionLines'
 import { NodeOrb } from '@/components/scene/NodeOrb'
@@ -16,6 +21,7 @@ interface SpatialSceneProps {
   motion: boolean
   resetToken: number
   onSelect: (nodeId: string) => void
+  onHover: HoverHandler
 }
 
 export function SpatialScene({
@@ -28,13 +34,14 @@ export function SpatialScene({
   motion,
   resetToken,
   onSelect,
+  onHover,
 }: SpatialSceneProps) {
   const positions = useMemo(() => buildGraphPositions(dataset, 'spatial'), [dataset])
 
   return (
     <>
-      <color attach="background" args={['#05070c']} />
-      <fog attach="fog" args={['#05070c', 16, 62]} />
+      <color attach="background" args={['#0b0b0d']} />
+      <fog attach="fog" args={['#0b0b0d', 16, 62]} />
       <ambientLight intensity={0.62} />
       <hemisphereLight args={['#cfeaff', '#111323', 0.55]} />
       <directionalLight position={[7, 9, 10]} intensity={1.15} color="#d8ecff" />
@@ -49,6 +56,7 @@ export function SpatialScene({
         positions={positions}
         selectedId={selectedId}
         mode="spatial"
+        motion={motion}
       />
 
       {activeNodes.map((node) => {
@@ -64,6 +72,7 @@ export function SpatialScene({
             dimmed={dimmed}
             motion={motion}
             onSelect={onSelect}
+            onHover={onHover}
           />
         )
       })}
