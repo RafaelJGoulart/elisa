@@ -148,6 +148,19 @@ Nenhuma frente ativa no momento.
 - [ ] Vínculos com o futuro módulo Conhecimento.
 - [ ] Editor Markdown com pré-visualização, se houver necessidade concreta.
 - [ ] Filtro por etiqueta e navegação por período.
+- [ ] Rota por ID para abrir uma entrada específica e permitir link profundo.
+
+### Universo pessoal — laboratório
+
+- [x] Protótipo isolado em `experiments/elisa-universe/` com três modos de navegação e dados fictícios.
+- [x] Contrato preliminar, diagnóstico da arquitetura real, avaliação de renderização e plano em `experiments/elisa-universe/PROPOSAL.md`.
+- [x] Testes unitários de busca, filtros, conexões, layout e integridade dos dados fictícios.
+- [ ] Decisão de produto sobre incorporar o universo à aplicação principal.
+- [ ] Contrato real somente leitura no backend, sem migração.
+- [ ] Rota `/universo` com modo lista/2D como padrão e 3D sob demanda.
+- [ ] Ambientes temáticos por região, somente após dados reais.
+
+O experimento não é um módulo da Elisa e não altera dados. Ver [contexto do experimento](experiments/elisa-universe.md).
 
 ### Conhecimento
 

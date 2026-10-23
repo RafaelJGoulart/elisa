@@ -29,6 +29,10 @@ Ponto de entrada da memória documental do projeto. Leia apenas o que for releva
 
 - [Launcher desktop](decisions/ADR-010-launcher-desktop-pywebview.md) — janela de controle em `desktop/launcher.html`, iniciada por `elisa_desktop.py` ou `iniciar_elisa.cmd`; a interface React continua no navegador.
 
+## Experimentos
+
+- [Universo pessoal 3D](experiments/elisa-universe.md) — laboratório isolado com dados fictícios; compara grafo espacial, ambientes e grafo 2D. Sem integração ou decisão de produto. Diagnóstico e contrato preliminar em `experiments/elisa-universe/PROPOSAL.md`.
+
 ## Decisões registradas
 
 - [ADR-001 — Monólito modular local-first](decisions/ADR-001-monolito-modular-local-first.md)
