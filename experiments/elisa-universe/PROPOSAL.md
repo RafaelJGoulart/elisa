@@ -165,7 +165,7 @@ Mapeamento do laboratório para o real:
 | CSS 3D | sem dependências | limitado para rede e câmera real | nunca para o grafo principal |
 | Babylon.js | recursos de cena e ferramentas | peso e paradigma adicionais sem ganho claro aqui | não recomendado nesta escala |
 
-O build atual do laboratório mede **1.210,78 kB de JS (334,79 kB gzip)** e emite aviso de chunk acima de 500 kB por causa de `three`/Drei. Para 24 nós isso é aceitável em laboratório, mas inaceitável como custo inicial da aplicação. Se adotado, o modo 3D deve ser carregado sob demanda e o modo 2D/lista deve funcionar sem baixar Three.js.
+O build atual do laboratório mede **1.218,46 kB de JS (337,07 kB gzip)** e emite aviso de chunk acima de 500 kB por causa de `three`/Drei. Para 24 nós isso é aceitável em laboratório, mas inaceitável como custo inicial da aplicação. Se adotado, o modo 3D deve ser carregado sob demanda e o modo 2D/lista deve funcionar sem baixar Three.js.
 
 ## 5. Plano incremental
 

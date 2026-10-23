@@ -7,8 +7,9 @@ Laboratório visual independente para comparar três formas de navegar por um un
 - 24 registros fictícios em seis categorias: projetos, leituras, hábitos, objetivos, anotações e conquistas.
 - 26 relações fictícias, incluindo quatro registros deliberadamente isolados.
 - Busca, filtro por categoria, seleção de nós, painel de detalhes e navegação por teclado.
-- Halo suave nos astros, partículas animadas pelas conexões e tooltip junto ao cursor nos modos 3D, incluindo o núcleo “Elisa” no modo B.
-- Rotação automática do modo B, mais lenta ou desligada conforme a preferência de movimento.
+- Halo suave nos astros e nos nós do grafo 2D, partículas animadas pelas conexões e tooltip junto ao cursor nos três modos.
+- Núcleo “Elisa” no centro do grafo 2D, com a mesma leitura do núcleo do modo B.
+- Rotação automática do modo B e do grafo 2D, mais lenta ou desligada conforme a preferência de movimento. No 2D, os rótulos permanecem na vertical para preservar a leitura.
 - Movimento reduzido, respeitando `prefers-reduced-motion`, e alternativa textual completa no painel de exploração.
 - Nenhuma persistência, conta, IA ou integração externa.
 
@@ -61,7 +62,7 @@ npm run build
 npm run check
 ```
 
-Os testes unitários cobrem busca sem acento, filtros, conexões, layout determinístico e integridade do conjunto fictício. O build atual gera um chunk principal acima de 500 kB por causa de `three` e `@react-three/drei`. É um aviso de tamanho, não um erro; otimização com divisão de código pode ser avaliada se o protótipo for incorporado ao produto.
+Os testes unitários cobrem busca sem acento, filtros, conexões, layout determinístico, integridade do conjunto fictício e movimento determinístico do grafo 2D. O build atual gera um chunk principal acima de 500 kB por causa de `three` e `@react-three/drei`. É um aviso de tamanho, não um erro; otimização com divisão de código pode ser avaliada se o protótipo for incorporado ao produto.
 
 ## Estrutura
 

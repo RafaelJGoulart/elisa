@@ -18,8 +18,8 @@ Protótipo independente e navegável. Não faz parte da aplicação principal da
 - Documentado o protótipo em `README.md`.
 - Registrados diagnóstico, contrato preliminar, avaliação técnica e plano em `PROPOSAL.md`.
 - Instaladas e fixadas as dependências em `package.json` e `package-lock.json`.
-- Adicionados 21 testes unitários para busca, filtros, conexões, layout determinístico e integridade do conjunto fictício.
-- Adicionadas camadas de atmosfera: halo aditivo nos astros e no núcleo, partículas viajando pelas conexões com velocidades e defasagens diferentes, rotação automática mais perceptível no modo B e tooltip junto ao cursor ao passar sobre um nó ou sobre o núcleo “Elisa” no modo B.
+- Adicionados 23 testes unitários para busca, filtros, conexões, layout determinístico, integridade do conjunto fictício e movimento determinístico do grafo 2D.
+- Adicionadas camadas de atmosfera: halo aditivo nos astros, no núcleo e nos nós do grafo 2D; partículas viajando pelas conexões com velocidades e defasagens diferentes; rotação automática mais perceptível no modo B e no grafo 2D; e tooltip junto ao cursor nos três modos, incluindo o núcleo “Elisa” no modo B e no centro do grafo 2D.
 - Alinhada a moldura da interface à identidade da Elisa real: tokens de fundo e superfície, bordas de 1 px, roxo como foco, Inter Variable e JetBrains Mono Variable locais, marca triangular, controles com raios de 8–12 px e tipografia sem serifa. O fundo das cenas 3D passou a usar `#0B0B0D`; nós, conexões, materiais e cores de categoria foram preservados.
 
 ## Correções e ajustes realizados
@@ -33,15 +33,17 @@ Protótipo independente e navegável. Não faz parte da aplicação principal da
 - Adicionadas proteções de largura no layout e ajuste mobile da barra superior e do botão de visão geral.
 - Reduzidos os rótulos das regiões e aproximados do centro em telas estreitas, corrigindo o corte lateral do modo B.
 - Extraída a busca e o filtro de `App.tsx` para `lib/universe.ts`, permitindo testes sem montar a cena.
+- Implementados no grafo 2D brilho nos nós, partículas nas conexões, tooltip e núcleo central. A rotação lenta usa a mesma cadência do modo B; os rótulos são contrarrotacionados para permanecerem legíveis e as animações SVG são pausadas durante o arrasto.
 
 ## Validação
 
-- `npm run check` passou com lint sem avisos/erros, typecheck sem erros, **21 testes unitários aprovados** e build concluído.
+- `npm run check` passou com lint sem avisos/erros, typecheck sem erros, **23 testes unitários aprovados** e build concluído.
 - O build gera apenas o aviso de chunk principal acima de 500 kB por causa de `three` e `@react-three/drei`; não é erro.
 - QA visual desktop em 1440×900 nos modos A, B e C, sem exceções de runtime.
 - QA visual mobile em 390×844 via CDP, sem overflow horizontal; barra superior, abas e ações permanecem dentro da viewport.
 - Modo B revalidado em 390×844 com iframe local após o ajuste de câmera e rótulos: nenhuma esfera ou rótulo ficou cortado, mas a cena ocupa menos altura e os rótulos ficam pequenos; a lista e a legenda continuam sendo a leitura confiável nessa largura.
 - Halo dos astros, partículas nas conexões e tooltip verificados visualmente nos modos A e B, sem erros de console; no modo B, o núcleo central identifica “Elisa · Núcleo”.
+- Modo C revalidado em 1440×900: brilho nos nós, partículas nas conexões, tooltip dos nós, núcleo central com tooltip “Elisa · Núcleo” e rotação lenta com rótulos sempre na vertical. O arrasto pausa as animações SVG; desligar “Movimento” removeu as 33 rotações e as 26 partículas.
 - Identidade visual validada em 1440×900 e 390×844 nos modos A, B e C, com painel de detalhes aberto e sem overflow horizontal. A fonte computada é Inter Variable e o fundo é `rgb(11, 11, 13)`.
 - Partículas e rotação automática são desligadas quando “Movimento” está inativo ou quando o sistema pede movimento reduzido.
 - Verificados seleção de “Atlas de bolso” com seis relações, busca por “estufa” com três resultados e estado vazio de busca.

@@ -18,10 +18,10 @@ Não acessa backend, banco, autenticação, Diário ou dados reais. Não persist
 
 - O conjunto fictício tem 24 registros em seis categorias e 26 relações, com quatro registros isolados.
 - Busca, filtros, seleção e detalhes são compartilhados entre os modos.
-- Os astros têm halo aditivo; partículas percorrem as conexões com defasagem; o modo B gira automaticamente; os modos 3D mostram uma tooltip junto ao cursor, e o núcleo do modo B se identifica como “Elisa · Núcleo”.
+- Os astros e os nós do grafo 2D têm halo aditivo; partículas percorrem as conexões com defasagem; o modo B e o grafo 2D giram automaticamente; os três modos mostram uma tooltip junto ao cursor, e o núcleo “Elisa · Núcleo” aparece no modo B e no centro do grafo 2D. No 2D, os rótulos permanecem na vertical durante a rotação.
 - A moldura usa os tokens visuais da Elisa real (fundo, superfícies, bordas, roxo, Inter e JetBrains Mono locais) e a marca triangular. Os grafos mantêm geometria, materiais e cores; apenas o fundo das cenas foi alinhado ao neutro da aplicação.
 - A lista textual, o foco visível, a navegação por teclado e `prefers-reduced-motion` funcionam como alternativa à cena 3D.
-- `npm run check` executa lint, typecheck, 21 testes unitários e build; o único aviso é o chunk acima de 500 kB por causa de Three.js/Drei.
+- `npm run check` executa lint, typecheck, 23 testes unitários e build; o único aviso é o chunk acima de 500 kB por causa de Three.js/Drei.
 - O modo 3D não é carregado pela aplicação principal; o frontend não possui Three.js.
 
 ## Limites conhecidos
